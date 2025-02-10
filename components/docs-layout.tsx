@@ -1,27 +1,37 @@
-"use client"
+"use client";
 
-import { useState, type ReactNode } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Navigation } from "@/components/navigation"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Menu } from "lucide-react"
+import { useState, type ReactNode } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Navigation } from "@/components/navigation";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Menu } from "lucide-react";
 
 interface DocsSidebarProps {
-  items: { title: string; href: string }[]
-  isSignedIn: boolean
+  items: { title: string; href: string }[];
+  isSignedIn: boolean;
 }
 
 function DocsSidebar({ items, isSignedIn }: DocsSidebarProps) {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <ScrollArea className="h-full py-6 pl-8 pr-6">
       <h4 className="mb-4 text-sm font-semibold">Documentation</h4>
       <nav className="flex flex-col space-y-2">
+      <Link
+          href="/docs/overview"
+          className={`text-sm ${
+            pathname === "/docs/overview"
+              ? "font-semibold text-primary"
+              : "text-muted-foreground hover:text-primary"
+          }`}
+        >
+          Overview
+        </Link>
         <Link
           href="/docs/getting-started"
           className={`text-sm ${
@@ -39,7 +49,9 @@ function DocsSidebar({ items, isSignedIn }: DocsSidebarProps) {
                 key={item.href}
                 href={item.href}
                 className={`text-sm ${
-                  pathname === item.href ? "font-semibold text-primary" : "text-muted-foreground hover:text-primary"
+                  pathname === item.href
+                    ? "font-semibold text-primary"
+                    : "text-muted-foreground hover:text-primary"
                 }`}
               >
                 {item.title}
@@ -49,32 +61,35 @@ function DocsSidebar({ items, isSignedIn }: DocsSidebarProps) {
         )}
       </nav>
     </ScrollArea>
-  )
+  );
 }
 
 interface DocsLayoutProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 const sidebarItemsSignedOut = [
+  { title: "Overview", href: "/docs/overview" },
   { title: "Getting Started", href: "/docs/getting-started" },
   { title: "Usage", href: "/docs/usage" },
   { title: "Webhooks", href: "/docs/webhooks" },
-]
+];
 
 const sidebarItemsSignedIn = [
   { title: "API Key Management", href: "/docs/api-key-management" },
   { title: "Historical Scrapes", href: "/docs/historical-scrapes" },
   { title: "Interactive Scrape Test", href: "/docs/interactive-scrape-test" },
   { title: "Account Settings", href: "/docs/account-settings" },
-]
+];
 
 export function DocsLayout({ children }: DocsLayoutProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [isSignedIn, setIsSignedIn] = useState(false) // This should be replaced with actual auth state
-  const pathname = usePathname()
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false); // This should be replaced with actual auth state
+  const pathname = usePathname();
 
-  const sidebarItems = isSignedIn ? sidebarItemsSignedIn : sidebarItemsSignedOut
+  const sidebarItems = isSignedIn
+    ? sidebarItemsSignedIn
+    : sidebarItemsSignedOut;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -106,14 +121,23 @@ export function DocsLayout({ children }: DocsLayoutProps) {
               {isSignedIn ? (
                 children
               ) : (
-                <Tabs defaultValue="getting-started" className="space-y-6">
+                <Tabs defaultValue="overview" className="space-y-6">
                   <TabsList>
-                    <TabsTrigger value="getting-started">Getting Started</TabsTrigger>
+                    <TabsTrigger value="overview">Overview</TabsTrigger>
+                    <TabsTrigger value="getting-started">
+                      Getting Started
+                    </TabsTrigger>
                     <TabsTrigger value="usage">Usage</TabsTrigger>
                     <TabsTrigger value="webhooks">Webhooks</TabsTrigger>
                   </TabsList>
-                  <TabsContent value="getting-started" className="border-none p-0">
-                    {pathname === "/docs" || pathname === "/docs/getting-started" ? children : null}
+                  <TabsContent value="overview" className="border-none p-0">
+                    {pathname === "/docs/overview" ? children : null}
+                  </TabsContent>
+                  <TabsContent
+                    value="getting-started"
+                    className="border-none p-0"
+                  >
+                    {pathname === "/docs/getting-started" ? children : null}
                   </TabsContent>
                   <TabsContent value="usage" className="border-none p-0">
                     {pathname === "/docs/usage" && children}
@@ -128,6 +152,5 @@ export function DocsLayout({ children }: DocsLayoutProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

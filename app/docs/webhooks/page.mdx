@@ -30,6 +30,7 @@ To secure your webhook endpoints:
 2. Implement webhook signature verification to ensure the authenticity of incoming requests.
 
 <CodeBlock language="javascript">
+{`
 const crypto = require('crypto');
 
 function verifyWebhookSignature(payload, signature, secret) {
@@ -37,6 +38,7 @@ function verifyWebhookSignature(payload, signature, secret) {
   const digest = hmac.update(payload).digest('hex');
   return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
 }
+`}
 </CodeBlock>
 
 ## Troubleshooting & Advanced Options

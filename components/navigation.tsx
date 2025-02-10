@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { ThemeSwitcher } from "@/components/theme-switcher"
-import { Button } from "@/components/ui/button"
-import Logo from "@/components/logo"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ThemeSwitcher } from "@/components/theme-switcher";
+import { Button } from "@/components/ui/button";
+import Logo from "@/components/logo";
 
 interface NavItem {
-  href: string
-  label: string
+  href: string;
+  label: string;
 }
 
 interface NavigationProps {
-  items?: NavItem[]
+  items?: NavItem[];
 }
 
 const defaultItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/docs", label: "Documentation" },
-]
+  { href: "/docs/overview", label: "Documentation" },
+];
 
 export function Navigation({ items = defaultItems }: NavigationProps) {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <nav className="p-4 flex justify-between items-center bg-white dark:bg-gray-800 shadow-md">
@@ -39,7 +39,9 @@ export function Navigation({ items = defaultItems }: NavigationProps) {
             <Link
               href={item.href}
               className={`text-gray-600 dark:text-gray-300 hover:text-[#7FFFD4] dark:hover:text-[#7FFFD4] transition-colors duration-200 ${
-                pathname === item.href ? "text-[#4169E1] dark:text-[#7FFFD4]" : ""
+                pathname === item.href
+                  ? "text-[#4169E1] dark:text-[#7FFFD4]"
+                  : ""
               }`}
             >
               {item.label}
@@ -58,6 +60,5 @@ export function Navigation({ items = defaultItems }: NavigationProps) {
         </li>
       </ul>
     </nav>
-  )
+  );
 }
-

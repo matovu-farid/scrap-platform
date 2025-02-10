@@ -1,10 +1,7 @@
-import { DocsLayout } from "@/components/docs-layout";
 import { CodeBlock } from "@/components/docs/code-block";
 import { Callout } from "@/components/docs/callout";
-import { Navigation } from "@/components/navigation";
 
-<DocsLayout>
-  <Navigation />
+<div>
 
 # Documentation
 
@@ -13,6 +10,7 @@ import { Navigation } from "@/components/navigation";
 scrap-ai is a powerful AI-driven web scraping library that makes data extraction simple and efficient. Our library combines natural language processing with robust web scraping capabilities to help you gather data from any website with minimal configuration.
 
 Key features:
+
 - 🤖 AI-powered scraping with natural language instructions
 - 🔄 Real-time updates via webhooks
 - 🛡️ Built-in rate limiting and error handling
@@ -86,11 +84,11 @@ The main class for interacting with the scrap-ai API.
 
 <CodeBlock language="typescript">
   {`
-class ScrapeClient {
-  constructor(apiKey: string);
-  scrape(url: string, instructions: string, webhookUrl: string): Promise<{ jobId: string }>;
-  getJobStatus(jobId: string): Promise<{ status: string, progress: number }>;
-}
+    class ScrapeClient {
+      constructor(apiKey: string);
+      scrape(url: string, instructions: string, webhookUrl: string): Promise<{ jobId: string }>;
+      getJobStatus(jobId: string): Promise<{ status: string, progress: number }>;
+    }
 `}
 </CodeBlock>
 
@@ -224,9 +222,11 @@ For advanced webhook configuration, you can:
 - Set up retry logic for failed webhook deliveries.
 - Implement a queueing system to handle high volumes of webhook events.
 
+---
+
 <Callout type="warning">
   Always handle webhook events idempotently, as the same event may be sent
   multiple times in rare cases.
 </Callout>
 
-</DocsLayout>
+</div>

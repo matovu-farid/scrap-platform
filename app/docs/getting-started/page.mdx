@@ -1,10 +1,9 @@
-import { DocsLayout } from "@/components/docs-layout"
 import { CodeBlock } from "@/components/docs/code-block"
 import { Callout } from "@/components/docs/callout"
 
 export default function GettingStarted() {
   return (
-    <DocsLayout>
+    <div>
       <h1 className="text-4xl font-bold mb-6">Getting Started</h1>
 
       <p className="mb-4">
@@ -37,13 +36,14 @@ export default function GettingStarted() {
         {`import ScrapAI from 'scrap-ai';
 
 const config = {
-  // Replace with your actual configuration options
-  apiKey: 'your-api-key-here',
-  maxConcurrentJobs: 5
+// Replace with your actual configuration options
+apiKey: 'your-api-key-here',
+maxConcurrentJobs: 5
 };
 
 const instance = new ScrapAI(config);`}
-      </CodeBlock>
+
+</CodeBlock>
 
       <Callout type="info">
         For a full list of configuration options and their descriptions, please refer to the "Using the Library" section.
@@ -59,19 +59,20 @@ const instance = new ScrapAI(config);`}
         {`import ScrapAI from 'scrap-ai';
 
 const instance = new ScrapAI({
-  apiKey: 'your-api-key-here',
-  maxConcurrentJobs: 5
+apiKey: 'your-api-key-here',
+maxConcurrentJobs: 5
 });
 
 // Perform a basic scraping operation
 instance.scrape('https://example.com', 'Extract all paragraph text')
-  .then(result => {
-    console.log('Scraping successful:', result);
-  })
-  .catch(error => {
-    console.error('Scraping failed:', error);
-  });`}
-      </CodeBlock>
+.then(result => {
+console.log('Scraping successful:', result);
+})
+.catch(error => {
+console.error('Scraping failed:', error);
+});`}
+
+</CodeBlock>
 
       <p className="mt-4 mb-4">
         This quick start example shows you how to integrate the library into your project and execute a primary function. As you progress, you can explore more advanced features and customizations.
@@ -90,7 +91,7 @@ instance.scrape('https://example.com', 'Extract all paragraph text')
       </ul>
 
       <p className="mt-8 mb-4">Happy coding, and welcome aboard!</p>
-    </DocsLayout>
-  )
-}
+    </div>
 
+)
+}
