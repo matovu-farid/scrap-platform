@@ -20,8 +20,15 @@ const mockScrapes = [
 ]
 
 export function HistoricalScrapes() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedScrape, setSelectedScrape] = useState(null)
+  const [searchTerm, setSearchTerm] = useState("");
+  type Scrape = {
+    id: number;
+    date: string;
+    duration: string;
+    status: string;
+    url: string;
+  };
+  const [selectedScrape, setSelectedScrape] = useState<Scrape | null>(null);
 
   const filteredScrapes = mockScrapes.filter(
     (scrape) =>

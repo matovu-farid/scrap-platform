@@ -1,6 +1,6 @@
-import { DocsLayout } from "@/components/docs-layout"
-import { CodeBlock } from "@/components/docs/code-block"
-import { Callout } from "@/components/docs/callout"
+import { DocsLayout } from "@/components/docs-layout";
+import { CodeBlock } from "@/components/docs/code-block";
+import { Callout } from "@/components/docs/callout";
 
 <DocsLayout>
 
@@ -15,11 +15,13 @@ Once you have scrap-ai installed, dive into the rich set of features it offers. 
 The main class for interacting with the scrap-ai API.
 
 <CodeBlock language="javascript">
+  {`
 class ScrapeClient {
   constructor(apiKey: string);
   scrape(url: string, instructions: string, webhookUrl: string): Promise<{ jobId: string }>;
   getJobStatus(jobId: string): Promise<{ status: string, progress: number }>;
 }
+`}
 </CodeBlock>
 
 ### scrape(url, instructions, webhookUrl)
@@ -47,38 +49,45 @@ Retrieves the status of a scraping job.
 ### Scraping Product Information
 
 <CodeBlock language="javascript">
+{`
 const client = new ScrapeClient("YOUR_API_KEY");
 
 async function scrapeProductInfo(productUrl) {
-  try {
-    const result = await client.scrape(
-      productUrl,
-      "Extract product name, price, and description",
-      "https://your-webhook-url.com/product-info"
-    );
-    console.log("Product info scraping initiated:", result.jobId);
-  } catch (error) {
-    console.error("Error scraping product info:", error.message);
-  }
+try {
+const result = await client.scrape(
+productUrl,
+"Extract product name, price, and description",
+"https://your-webhook-url.com/product-info"
+);
+console.log("Product info scraping initiated:", result.jobId);
+} catch (error) {
+console.error("Error scraping product info:", error.message);
+}
 }
 
 scrapeProductInfo("https://example.com/product");
+`}
+
 </CodeBlock>
 
 ### Monitoring Job Progress
 
 <CodeBlock language="javascript">
+{`
 async function monitorJob(jobId) {
   try {
     const status = await client.getJobStatus(jobId);
-    console.log(`Job ${jobId} status:`, status.status);
-    console.log(`Progress: ${status.progress}%`);
+    console.log(\`Job \${jobId} status:\`, status.status);
+    console.log(\`Progress: \${status.progress}%\`);
   } catch (error) {
     console.error("Error checking job status:", error.message);
   }
 }
+`}
 
 monitorJob("job_123456");
+`}
+
 </CodeBlock>
 
 ## Configuration Options
@@ -86,12 +95,13 @@ monitorJob("job_123456");
 scrap-ai offers several configuration options to customize its behavior:
 
 <CodeBlock language="javascript">
+  {`
 const client = new ScrapeClient("YOUR_API_KEY", {
   timeout: 30000, // Request timeout in milliseconds
   maxRetries: 3, // Maximum number of retries for failed requests
   userAgent: "Custom User Agent String", // Set a custom User-Agent header
 });
+`}
 </CodeBlock>
 
 </DocsLayout>
-

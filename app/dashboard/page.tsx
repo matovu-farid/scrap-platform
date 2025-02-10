@@ -1,31 +1,29 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { motion } from "framer-motion"
-import { ThemeSwitcher } from "@/components/theme-switcher"
-import { APIKeyManagement } from "@/components/dashboard/api-key-management"
-import { HistoricalScrapes } from "@/components/dashboard/historical-scrapes"
-import { InteractiveScrapeTest } from "@/components/dashboard/interactive-scrape-test"
-import { AccountSettings } from "@/components/dashboard/account-settings"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
-import Logo from "@/components/logo"
-import { Key, History, Play, User, Menu } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { ThemeSwitcher } from "@/components/theme-switcher";
+import { APIKeyManagement } from "@/components/dashboard/api-key-management";
+import { HistoricalScrapes } from "@/components/dashboard/historical-scrapes";
+import { InteractiveScrapeTest } from "@/components/dashboard/interactive-scrape-test";
+import { AccountSettings } from "@/components/dashboard/account-settings";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import Logo from "@/components/logo";
+import { Key, History, Play, User, Menu } from "lucide-react";
 
 export default function Dashboard() {
-  const router = useRouter()
-  const { toast } = useToast()
-  const [activeTab, setActiveTab] = useState("api-key")
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState("api-key");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("isLoggedIn")
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
     if (!isLoggedIn) {
-      router.push("/login")
+      router.push("/login");
     }
-  }, [router])
+  }, [router]);
 
   const SidebarContent = () => (
     <>
@@ -41,9 +39,10 @@ export default function Dashboard() {
       <nav className="flex-1 mt-4">
         <div className="px-2 space-y-1">
           <button
+            type="button"
             onClick={() => {
-              setActiveTab("api-key")
-              setIsMobileMenuOpen(false)
+              setActiveTab("api-key");
+              setIsMobileMenuOpen(false);
             }}
             className={`flex items-center w-full px-4 py-2 text-sm rounded-lg ${
               activeTab === "api-key"
@@ -56,9 +55,10 @@ export default function Dashboard() {
           </button>
 
           <button
+            type="button"
             onClick={() => {
-              setActiveTab("historical-scrapes")
-              setIsMobileMenuOpen(false)
+              setActiveTab("historical-scrapes");
+              setIsMobileMenuOpen(false);
             }}
             className={`flex items-center w-full px-4 py-2 text-sm rounded-lg ${
               activeTab === "historical-scrapes"
@@ -71,9 +71,10 @@ export default function Dashboard() {
           </button>
 
           <button
+            type="button"
             onClick={() => {
-              setActiveTab("scrape-test")
-              setIsMobileMenuOpen(false)
+              setActiveTab("scrape-test");
+              setIsMobileMenuOpen(false);
             }}
             className={`flex items-center w-full px-4 py-2 text-sm rounded-lg ${
               activeTab === "scrape-test"
@@ -86,9 +87,10 @@ export default function Dashboard() {
           </button>
 
           <button
+            type="button"
             onClick={() => {
-              setActiveTab("account")
-              setIsMobileMenuOpen(false)
+              setActiveTab("account");
+              setIsMobileMenuOpen(false);
             }}
             className={`flex items-center w-full px-4 py-2 text-sm rounded-lg ${
               activeTab === "account"
@@ -109,8 +111,8 @@ export default function Dashboard() {
           <Button
             variant="ghost"
             onClick={() => {
-              localStorage.removeItem("isLoggedIn")
-              router.push("/")
+              localStorage.removeItem("isLoggedIn");
+              router.push("/");
             }}
           >
             Logout
@@ -118,22 +120,22 @@ export default function Dashboard() {
         </div>
       </div>
     </>
-  )
+  );
 
   const renderContent = () => {
     switch (activeTab) {
       case "api-key":
-        return <APIKeyManagement />
+        return <APIKeyManagement />;
       case "historical-scrapes":
-        return <HistoricalScrapes />
+        return <HistoricalScrapes />;
       case "scrape-test":
-        return <InteractiveScrapeTest />
+        return <InteractiveScrapeTest />;
       case "account":
-        return <AccountSettings />
+        return <AccountSettings />;
       default:
-        return <APIKeyManagement />
+        return <APIKeyManagement />;
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900">
@@ -146,7 +148,10 @@ export default function Dashboard() {
 
       {/* Mobile Sidebar */}
       <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-        <SheetContent side="left" className="w-64 p-0 bg-white dark:bg-gray-800">
+        <SheetContent
+          side="left"
+          className="w-64 p-0 bg-white dark:bg-gray-800"
+        >
           <div className="flex flex-col h-full">
             <SidebarContent />
           </div>
@@ -164,7 +169,9 @@ export default function Dashboard() {
           >
             <Menu className="h-5 w-5" />
           </Button>
-          <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Dashboard</h1>
+          <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+            Dashboard
+          </h1>
         </header>
 
         <main className="flex-1 overflow-auto p-6 bg-gray-50 dark:bg-gray-900">
@@ -179,6 +186,5 @@ export default function Dashboard() {
         </main>
       </div>
     </div>
-  )
+  );
 }
-
