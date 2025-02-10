@@ -1,48 +1,123 @@
-import { CodeBlock } from "@/components/docs/code-block";
-import { Callout } from "@/components/docs/callout";
+export const metadata = {
+  title: "Overview | Scrap Platform",
+  description:
+    "AI-Powered web scraping platform that transforms web content into actionable insights using scrap-ai v0.0.5",
+};
 
----
+import { CTAButton } from "@/components/docs/CTAButton";
 
-title: "Overview"
-description: "Discover Scrap Platform – AI-Powered Web Scraping with scrap-ai v0.0.5"
+<div className="max-w-3xl mx-auto">
+  # Welcome to Scrap Platform
 
----
+{" "}
+<p className="text-xl text-muted-foreground mb-8 italic">
+  _AI-Powered Web Scraping at Your Fingertips_
+</p>
 
-import { CTAButton } from "../components/CTAButton";
+{" "}
+<div className="prose prose-gray dark:prose-invert">
+  Scrap Platform is your one-stop solution for effortless data extraction. With
+  just a URL and a webhook, our AI-driven engine harnesses the power of the
+  scrap-ai **v0.0.5** library to transform web content into actionable insights.
+  Whether you're looking to analyze market trends, gather product details, or
+  simply explore data, our platform streamlines the process with speed and
+  precision.
+</div>
 
-# Welcome to Scrap Platform
+{" "}
+<div className="mt-8 mb-12">
+  <CTAButton href="/auth/signup">Get Started</CTAButton>
+</div>
 
-**AI-Powered Web Scraping at Your Fingertips**
+  <div className="bg-muted/50 rounded-lg p-8 mb-12">
+    ## Key Features
 
-Scrap Platform empowers you to transform web content into actionable insights with unparalleled ease. Leveraging the cutting-edge **scrap-ai v0.0.5** library, our platform lets you extract data effortlessly—just provide a URL and a webhook endpoint, and let our intelligent engine do the rest.
+    <div className="grid md:grid-cols-2 gap-6 mt-6">
+      <div className="space-y-2">
+        ### Simple & Intuitive Setup
+        <p className="text-muted-foreground">
+          Get started quickly with an easy-to-navigate interface that guides you through every step.
+        </p>
+      </div>
 
-## Why Choose Scrap Platform?
+      <div className="space-y-2">
+        ### Customizable Data Extraction
+        <p className="text-muted-foreground">
+          Tailor your scraping tasks with specific prompts to extract the exact information you need.
+        </p>
+      </div>
 
-### Simple & Intuitive Setup
+      <div className="space-y-2">
+        ### Secure & Reliable
+        <p className="text-muted-foreground">
+          Benefit from robust API key authentication and secure webhook verification, ensuring your data
+          is always protected.
+        </p>
+      </div>
 
-- **Effortless Onboarding:** Get started immediately with our user-friendly interface that guides you step-by-step.
-- **Streamlined Workflow:** Quickly configure your scraping tasks without the technical hassle.
+      <div className="space-y-2">
+        ### Comprehensive Documentation
+        <p className="text-muted-foreground">
+          Access detailed guides and API references anytime—even before signing in—to help you integrate
+          our tool into your workflow.
+        </p>
+      </div>
 
-### Customizable Data Extraction
+      <div className="space-y-2">
+        ### Engaging, Animated Experience
+        <p className="text-muted-foreground">
+          Enjoy smooth animations and interactive transitions that make managing your scraping tasks both
+          efficient and enjoyable.
+        </p>
+      </div>
+    </div>
 
-- **Tailor-Made Prompts:** Define precise instructions to extract exactly the data you need.
-- **Versatile Integration:** Adapt the scraping process to suit diverse web content and data types.
+  </div>
 
-### Secure & Reliable
+  <div className="border rounded-lg p-8 mb-12">
+    ## Ready to Begin?
 
-- **Robust API Key Authentication:** Protect your data with secure API key management.
-- **Verified Webhook Delivery:** Ensure the authenticity of every data transfer with advanced webhook verification.
+    <p className="mb-4">Getting started with Scrap Platform is easy:</p>
 
-### Comprehensive Documentation
+    <div className="grid gap-4 mb-6">
+      <div className="flex items-center gap-4">
+        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold">1</span>
+        <span>Sign up for an account</span>
+      </div>
+      <div className="flex items-center gap-4">
+        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold">2</span>
+        <span>Get your API key</span>
+      </div>
+      <div className="flex items-center gap-4">
+        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold">3</span>
+        <span>Configure your webhook</span>
+      </div>
+      <div className="flex items-center gap-4">
+        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold">4</span>
+        <span>Start extracting data</span>
+      </div>
+    </div>
 
-- **Accessible Guides:** Dive into detailed documentation and API references—even if you're not signed in.
-- **Practical Examples:** Benefit from hands-on tutorials and code snippets to integrate and optimize your scraping tasks.
+    <div className="flex gap-4 mt-8">
+      <CTAButton href="/docs/getting-started">Read the Docs</CTAButton>
+      <CTAButton href="/auth/signup" variant="outline">
+        Sign Up Now
+      </CTAButton>
+    </div>
 
-### Engaging & Dynamic User Experience
+  </div>
 
-- **Smooth Animations:** Enjoy a visually captivating interface with seamless transitions and interactive elements.
-- **Responsive Design:** Experience a flawless interface on both desktop and mobile devices.
+  <div className="border-t pt-8">
+    ## Need Help?
 
----
+    <div className="prose prose-gray dark:prose-invert">
+      Our comprehensive documentation covers everything you need to know about using Scrap Platform.
+      Check out our [Getting Started](/docs/getting-started) guide or explore our [API Reference](/docs/api)
+      for detailed information.
 
-<CTAButton text="Get Started Now" link="/signup" />
+      For technical support or questions, feel free to reach out to our team at
+      [support@scrapplatform.com](mailto:support@scrapplatform.com).
+    </div>
+
+  </div>
+</div>
