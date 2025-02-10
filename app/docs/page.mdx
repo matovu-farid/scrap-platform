@@ -1,7 +1,7 @@
-import { DocsLayout } from "@/components/docs-layout"
-import { CodeBlock } from "@/components/docs/code-block"
-import { Callout } from "@/components/docs/callout"
-import { Navigation } from "@/components/navigation"
+import { DocsLayout } from "@/components/docs-layout";
+import { CodeBlock } from "@/components/docs/code-block";
+import { Callout } from "@/components/docs/callout";
+import { Navigation } from "@/components/navigation";
 
 <DocsLayout>
   <Navigation />
@@ -16,9 +16,7 @@ Welcome to **scrap-ai**! This section is designed to help you set up and begin u
 
 To install scrap-ai, use your preferred package manager:
 
-<CodeBlock language="bash">
-npm install scrap-ai@0.0.3
-</CodeBlock>
+<CodeBlock language="bash">npm install scrap-ai@0.0.3</CodeBlock>
 
 ### Basic Configuration
 
@@ -28,6 +26,7 @@ After installation, you need to set up your API key:
 import { ScrapeClient } from "scrap-ai";
 
 const client = new ScrapeClient("YOUR_API_KEY");
+
 </CodeBlock>
 
 <Callout type="info">
@@ -44,19 +43,20 @@ import { ScrapeClient } from "scrap-ai";
 const client = new ScrapeClient("YOUR_API_KEY");
 
 async function scrapeWebsite() {
-  try {
-    const result = await client.scrape(
-      "https://example.com",
-      "Extract all paragraph text",
-      "https://your-webhook-url.com/callback"
-    );
-    console.log("Scraping job initiated:", result.jobId);
-  } catch (error) {
-    console.error("Error:", error.message);
-  }
+try {
+const result = await client.scrape(
+"https://example.com",
+"Extract all paragraph text",
+"https://your-webhook-url.com/callback"
+);
+console.log("Scraping job initiated:", result.jobId);
+} catch (error) {
+console.error("Error:", error.message);
+}
 }
 
 scrapeWebsite();
+
 </CodeBlock>
 
 This example initiates a scraping job for "https://example.com", extracting all paragraph text, and sends the results to your specified webhook URL.
@@ -107,19 +107,20 @@ Retrieves the status of a scraping job.
 const client = new ScrapeClient("YOUR_API_KEY");
 
 async function scrapeProductInfo(productUrl) {
-  try {
-    const result = await client.scrape(
-      productUrl,
-      "Extract product name, price, and description",
-      "https://your-webhook-url.com/product-info"
-    );
-    console.log("Product info scraping initiated:", result.jobId);
-  } catch (error) {
-    console.error("Error scraping product info:", error.message);
-  }
+try {
+const result = await client.scrape(
+productUrl,
+"Extract product name, price, and description",
+"https://your-webhook-url.com/product-info"
+);
+console.log("Product info scraping initiated:", result.jobId);
+} catch (error) {
+console.error("Error scraping product info:", error.message);
+}
 }
 
 scrapeProductInfo("https://example.com/product");
+
 </CodeBlock>
 
 #### Monitoring Job Progress
@@ -136,6 +137,7 @@ async function monitorJob(jobId) {
 }
 
 monitorJob("job_123456");
+
 </CodeBlock>
 
 ### Configuration Options
@@ -179,10 +181,11 @@ To secure your webhook endpoints:
 const crypto = require('crypto');
 
 function verifyWebhookSignature(payload, signature, secret) {
-  const hmac = crypto.createHmac('sha256', secret);
-  const digest = hmac.update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
+const hmac = crypto.createHmac('sha256', secret);
+const digest = hmac.update(payload).digest('hex');
+return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
 }
+
 </CodeBlock>
 
 ### Troubleshooting & Advanced Options
@@ -199,8 +202,8 @@ For advanced webhook configuration, you can:
 - Implement a queueing system to handle high volumes of webhook events.
 
 <Callout type="warning">
-  Always handle webhook events idempotently, as the same event may be sent multiple times in rare cases.
+  Always handle webhook events idempotently, as the same event may be sent
+  multiple times in rare cases.
 </Callout>
 
 </DocsLayout>
-

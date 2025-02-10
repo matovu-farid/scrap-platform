@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { Navigation } from "@/components/navigation"
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Switch } from "@/components/ui/switch"
-import { useToast } from "@/components/ui/use-toast"
+import { Navigation } from "@/components/navigation";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { useToast } from "@/hooks/use-toast";
 
 const pricingPlans = [
   {
@@ -36,19 +36,21 @@ const pricingPlans = [
       "Data cleansing and preprocessing",
     ],
   },
-]
+];
 
 export default function Pricing() {
-  const [billingInterval, setBillingInterval] = useState<"monthly" | "annually">("monthly")
-  const { toast } = useToast()
+  const [billingInterval, setBillingInterval] = useState<
+    "monthly" | "annually"
+  >("monthly");
+  const { toast } = useToast();
 
   const handlePlanSelection = (planName: string) => {
     toast({
       title: "Plan Selected",
       description: `You've selected the ${planName} plan. Redirecting to signup...`,
-    })
+    });
     // In a real application, you would redirect to a signup page or process here
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100">
@@ -68,12 +70,26 @@ export default function Pricing() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <span className={`mr-2 ${billingInterval === "monthly" ? "font-bold" : ""}`}>Monthly</span>
+          <span
+            className={`mr-2 ${
+              billingInterval === "monthly" ? "font-bold" : ""
+            }`}
+          >
+            Monthly
+          </span>
           <Switch
             checked={billingInterval === "annually"}
-            onCheckedChange={(checked) => setBillingInterval(checked ? "annually" : "monthly")}
+            onCheckedChange={(checked) =>
+              setBillingInterval(checked ? "annually" : "monthly")
+            }
           />
-          <span className={`ml-2 ${billingInterval === "annually" ? "font-bold" : ""}`}>Annually (Save 20%)</span>
+          <span
+            className={`ml-2 ${
+              billingInterval === "annually" ? "font-bold" : ""
+            }`}
+          >
+            Annually (Save 20%)
+          </span>
         </motion.div>
         <div className="grid md:grid-cols-2 gap-8">
           {pricingPlans.map((plan, index) => (
@@ -86,8 +102,13 @@ export default function Pricing() {
             >
               <h2 className="text-2xl font-bold mb-4">{plan.name}</h2>
               <p className="text-4xl font-bold mb-6">
-                ${billingInterval === "annually" ? Math.floor(plan.price * 12 * 0.8) : plan.price}
-                <span className="text-base font-normal">/{billingInterval === "annually" ? "year" : "month"}</span>
+                $
+                {billingInterval === "annually"
+                  ? Math.floor(plan.price * 12 * 0.8)
+                  : plan.price}
+                <span className="text-base font-normal">
+                  /{billingInterval === "annually" ? "year" : "month"}
+                </span>
               </p>
               <ul className="mb-6">
                 {plan.features.map((feature, index) => (
@@ -99,14 +120,22 @@ export default function Pricing() {
                       viewBox="0 0 24 24"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      ></path>
                     </svg>
                     {feature}
                   </li>
                 ))}
                 {plan.limitations &&
                   plan.limitations.map((limitation, index) => (
-                    <li key={index} className="flex items-center mb-2 text-gray-500">
+                    <li
+                      key={index}
+                      className="flex items-center mb-2 text-gray-500"
+                    >
                       <svg
                         className="w-4 h-4 mr-2"
                         fill="none"
@@ -125,7 +154,10 @@ export default function Pricing() {
                     </li>
                   ))}
               </ul>
-              <Button onClick={() => handlePlanSelection(plan.name)} className="w-full">
+              <Button
+                onClick={() => handlePlanSelection(plan.name)}
+                className="w-full"
+              >
                 {plan.name === "Free" ? "Get Started" : "Upgrade Now"}
               </Button>
             </motion.div>
@@ -133,6 +165,5 @@ export default function Pricing() {
         </div>
       </main>
     </div>
-  )
+  );
 }
-
