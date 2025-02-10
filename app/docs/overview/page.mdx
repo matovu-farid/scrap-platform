@@ -1,232 +1,48 @@
 import { CodeBlock } from "@/components/docs/code-block";
 import { Callout } from "@/components/docs/callout";
 
-<div>
+---
 
-# Documentation
-
-## Overview
-
-scrap-ai is a powerful AI-driven web scraping library that makes data extraction simple and efficient. Our library combines natural language processing with robust web scraping capabilities to help you gather data from any website with minimal configuration.
-
-Key features:
-
-- 🤖 AI-powered scraping with natural language instructions
-- 🔄 Real-time updates via webhooks
-- 🛡️ Built-in rate limiting and error handling
-- 📦 Simple, promise-based API
-
-## Getting Started
-
-Welcome to **scrap-ai**! This section is designed to help you set up and begin using the library quickly. Here, you'll find:
-
-### Installation Instructions
-
-To install scrap-ai, use your preferred package manager:
-
-<CodeBlock language="bash">npm install scrap-ai@0.0.3</CodeBlock>
-
-### Basic Configuration
-
-After installation, you need to set up your API key:
-
-<CodeBlock language="javascript">
-{`
-import { ScrapeClient } from "scrap-ai";
-
-const client = new ScrapeClient("YOUR_API_KEY");
-`}
-
-</CodeBlock>
-
-<Callout type="info">
-  Replace "YOUR_API_KEY" with the API key you received upon registration.
-</Callout>
-
-### Quick Start Example
-
-Here's a simple example to get you started with web scraping:
-
-<CodeBlock language="javascript">
-{`
-import { ScrapeClient } from "scrap-ai";
-
-const client = new ScrapeClient("YOUR_API_KEY");
-
-async function scrapeWebsite() {
-try {
-const result = await client.scrape(
-"https://example.com",
-"Extract all paragraph text",
-"https://your-webhook-url.com/callback"
-);
-console.log("Scraping job initiated:", result.jobId);
-} catch (error) {
-console.error("Error:", error.message);
-}
-}
-
-scrapeWebsite();
-`}
-
-</CodeBlock>
-This example initiates a scraping job for "https://example.com", extracting all paragraph text, and sends the results to your specified webhook URL.
-
-## Using the Library
-
-Once you have scrap-ai installed, dive into the rich set of features it offers. In this section, you'll discover:
-
-### API Reference & Guides
-
-#### ScrapeClient
-
-The main class for interacting with the scrap-ai API.
-
-<CodeBlock language="typescript">
-  {`
-    class ScrapeClient {
-      constructor(apiKey: string);
-      scrape(url: string, instructions: string, webhookUrl: string): Promise<{ jobId: string }>;
-      getJobStatus(jobId: string): Promise<{ status: string, progress: number }>;
-    }
-`}
-</CodeBlock>
-
-#### scrape(url, instructions, webhookUrl)
-
-Initiates a scraping job.
-
-- `url`: The target URL to scrape.
-- `instructions`: Natural language instructions for the AI.
-- `webhookUrl`: URL to receive the scraping results.
-
-#### getJobStatus(jobId)
-
-Retrieves the status of a scraping job.
-
-- `jobId`: The ID of the job to check.
-
-### Best Practices
-
-1. **Rate Limiting**: Respect website's `robots.txt` and implement rate limiting to avoid overloading target servers.
-2. **Error Handling**: Always wrap API calls in try-catch blocks to handle potential errors gracefully.
-3. **Webhook Security**: Ensure your webhook endpoint is secure and validates incoming data.
-
-### Use Case Examples
-
-#### Scraping Product Information
-
-<CodeBlock language="javascript">
-{`
-const client = new ScrapeClient("YOUR_API_KEY");
-
-async function scrapeProductInfo(productUrl) {
-try {
-const result = await client.scrape(
-productUrl,
-"Extract product name, price, and description",
-"https://your-webhook-url.com/product-info"
-);
-console.log("Product info scraping initiated:", result.jobId);
-} catch (error) {
-console.error("Error scraping product info:", error.message);
-}
-}
-
-scrapeProductInfo("https://example.com/product");
-`}
-
-</CodeBlock>
-
-#### Monitoring Job Progress
-
-<CodeBlock language="javascript">
-{`
-async function monitorJob(jobId) {
-  try {
-    const status = await client.getJobStatus(jobId);
-    console.log(\`Job \${jobId} status:\`, status.status);
-    console.log(\`Progress: \${status.progress}%\`);
-  } catch (error) {
-    console.error("Error checking job status:", error.message);
-  }
-}
-
-monitorJob("job_123456");
-`}
-
-</CodeBlock>
-
-### Configuration Options
-
-scrap-ai offers several configuration options to customize its behavior:
-
-<CodeBlock language="javascript">
-  {`
-const client = new ScrapeClient("YOUR_API_KEY", {
-  timeout: 30000, // Request timeout in milliseconds
-  maxRetries: 3, // Maximum number of retries for failed requests
-  userAgent: "Custom User Agent String", // Set a custom User-Agent header
-});
-`}
-</CodeBlock>
-
-## Webhooks
-
-Enhance your integration with real-time event handling using webhooks. In this section, you'll find:
-
-### Setup Instructions
-
-1. Configure your webhook URL in your scrap-ai dashboard or when initiating a scrape job.
-2. Ensure your server is set up to receive POST requests at the specified URL.
-3. Implement logic to handle and process the incoming webhook data.
-
-### Event Triggers
-
-Webhooks are triggered for the following events:
-
-- `job.completed`: Fired when a scraping job is successfully completed.
-- `job.failed`: Fired when a scraping job encounters an error and fails.
-- `job.progress`: Fired periodically to update on the progress of a long-running job.
-
-### Security Considerations
-
-To secure your webhook endpoints:
-
-1. Use HTTPS for your webhook URL to encrypt data in transit.
-2. Implement webhook signature verification to ensure the authenticity of incoming requests.
-
-<CodeBlock language="javascript">
-{`
-const crypto = require('crypto');
-
-function verifyWebhookSignature(payload, signature, secret) {
-const hmac = crypto.createHmac('sha256', secret);
-const digest = hmac.update(payload).digest('hex');
-return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
-}
-`}
-
-</CodeBlock>
-
-### Troubleshooting & Advanced Options
-
-If you're not receiving webhook events:
-
-1. Check that your webhook URL is correctly configured and accessible.
-2. Verify that your server is properly handling POST requests.
-3. Check your server logs for any errors in processing webhook data.
-
-For advanced webhook configuration, you can:
-
-- Set up retry logic for failed webhook deliveries.
-- Implement a queueing system to handle high volumes of webhook events.
+title: "Overview"
+description: "Discover Scrap Platform – AI-Powered Web Scraping with scrap-ai v0.0.5"
 
 ---
 
-<Callout type="warning">
-  Always handle webhook events idempotently, as the same event may be sent
-  multiple times in rare cases.
-</Callout>
+import { CTAButton } from "../components/CTAButton";
 
-</div>
+# Welcome to Scrap Platform
+
+**AI-Powered Web Scraping at Your Fingertips**
+
+Scrap Platform empowers you to transform web content into actionable insights with unparalleled ease. Leveraging the cutting-edge **scrap-ai v0.0.5** library, our platform lets you extract data effortlessly—just provide a URL and a webhook endpoint, and let our intelligent engine do the rest.
+
+## Why Choose Scrap Platform?
+
+### Simple & Intuitive Setup
+
+- **Effortless Onboarding:** Get started immediately with our user-friendly interface that guides you step-by-step.
+- **Streamlined Workflow:** Quickly configure your scraping tasks without the technical hassle.
+
+### Customizable Data Extraction
+
+- **Tailor-Made Prompts:** Define precise instructions to extract exactly the data you need.
+- **Versatile Integration:** Adapt the scraping process to suit diverse web content and data types.
+
+### Secure & Reliable
+
+- **Robust API Key Authentication:** Protect your data with secure API key management.
+- **Verified Webhook Delivery:** Ensure the authenticity of every data transfer with advanced webhook verification.
+
+### Comprehensive Documentation
+
+- **Accessible Guides:** Dive into detailed documentation and API references—even if you're not signed in.
+- **Practical Examples:** Benefit from hands-on tutorials and code snippets to integrate and optimize your scraping tasks.
+
+### Engaging & Dynamic User Experience
+
+- **Smooth Animations:** Enjoy a visually captivating interface with seamless transitions and interactive elements.
+- **Responsive Design:** Experience a flawless interface on both desktop and mobile devices.
+
+---
+
+<CTAButton text="Get Started Now" link="/signup" />
