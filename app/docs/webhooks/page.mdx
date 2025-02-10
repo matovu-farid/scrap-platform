@@ -1,0 +1,60 @@
+import { DocsLayout } from "@/components/docs-layout"
+import { CodeBlock } from "@/components/docs/code-block"
+import { Callout } from "@/components/docs/callout"
+
+<DocsLayout>
+
+# Webhooks
+
+Enhance your integration with real-time event handling using webhooks. In this section, you'll find:
+
+## Setup Instructions
+
+1. Configure your webhook URL in your scrap-ai dashboard or when initiating a scrape job.
+2. Ensure your server is set up to receive POST requests at the specified URL.
+3. Implement logic to handle and process the incoming webhook data.
+
+## Event Triggers
+
+Webhooks are triggered for the following events:
+
+- `job.completed`: Fired when a scraping job is successfully completed.
+- `job.failed`: Fired when a scraping job encounters an error and fails.
+- `job.progress`: Fired periodically to update on the progress of a long-running job.
+
+## Security Considerations
+
+To secure your webhook endpoints:
+
+1. Use HTTPS for your webhook URL to encrypt data in transit.
+2. Implement webhook signature verification to ensure the authenticity of incoming requests.
+
+<CodeBlock language="javascript">
+const crypto = require('crypto');
+
+function verifyWebhookSignature(payload, signature, secret) {
+  const hmac = crypto.createHmac('sha256', secret);
+  const digest = hmac.update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
+}
+</CodeBlock>
+
+## Troubleshooting & Advanced Options
+
+If you're not receiving webhook events:
+
+1. Check that your webhook URL is correctly configured and accessible.
+2. Verify that your server is properly handling POST requests.
+3. Check your server logs for any errors in processing webhook data.
+
+For advanced webhook configuration, you can:
+
+- Set up retry logic for failed webhook deliveries.
+- Implement a queueing system to handle high volumes of webhook events.
+
+<Callout type="warning">
+  Always handle webhook events idempotently, as the same event may be sent multiple times in rare cases.
+</Callout>
+
+</DocsLayout>
+

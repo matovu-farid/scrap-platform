@@ -1,0 +1,96 @@
+import { DocsLayout } from "@/components/docs-layout"
+import { CodeBlock } from "@/components/docs/code-block"
+import { Callout } from "@/components/docs/callout"
+
+export default function GettingStarted() {
+  return (
+    <DocsLayout>
+      <h1 className="text-4xl font-bold mb-6">Getting Started</h1>
+
+      <p className="mb-4">
+        Welcome to <strong>scrap-ai</strong>! This guide is designed to help you set up and begin using the library quickly and efficiently. Whether you're new to the library or just need a refresher, follow these simple steps to get started.
+      </p>
+
+      <h2 className="text-2xl font-semibold mt-8 mb-4">1. Installation</h2>
+
+      <p className="mb-4">To install <strong>scrap-ai</strong>, use your preferred package manager. For example:</p>
+
+      <h3 className="text-xl font-semibold mt-6 mb-2">Using npm:</h3>
+
+      <CodeBlock language="bash">
+        npm install scrap-ai
+      </CodeBlock>
+
+      <h3 className="text-xl font-semibold mt-6 mb-2">Using Yarn:</h3>
+
+      <CodeBlock language="bash">
+        yarn add scrap-ai
+      </CodeBlock>
+
+      <h2 className="text-2xl font-semibold mt-8 mb-4">2. Basic Configuration</h2>
+
+      <p className="mb-4">
+        After installing the library, you'll need to configure it in your project. Start by importing the library and initializing it with your desired options. Here's a basic example:
+      </p>
+
+      <CodeBlock language="javascript">
+        {`import ScrapAI from 'scrap-ai';
+
+const config = {
+  // Replace with your actual configuration options
+  apiKey: 'your-api-key-here',
+  maxConcurrentJobs: 5
+};
+
+const instance = new ScrapAI(config);`}
+      </CodeBlock>
+
+      <Callout type="info">
+        For a full list of configuration options and their descriptions, please refer to the "Using the Library" section.
+      </Callout>
+
+      <h2 className="text-2xl font-semibold mt-8 mb-4">3. Quick Start Example</h2>
+
+      <p className="mb-4">
+        Let's walk through a simple example that demonstrates the core functionality of <strong>scrap-ai</strong>. In this example, we'll perform a basic scraping operation and log the result:
+      </p>
+
+      <CodeBlock language="javascript">
+        {`import ScrapAI from 'scrap-ai';
+
+const instance = new ScrapAI({
+  apiKey: 'your-api-key-here',
+  maxConcurrentJobs: 5
+});
+
+// Perform a basic scraping operation
+instance.scrape('https://example.com', 'Extract all paragraph text')
+  .then(result => {
+    console.log('Scraping successful:', result);
+  })
+  .catch(error => {
+    console.error('Scraping failed:', error);
+  });`}
+      </CodeBlock>
+
+      <p className="mt-4 mb-4">
+        This quick start example shows you how to integrate the library into your project and execute a primary function. As you progress, you can explore more advanced features and customizations.
+      </p>
+
+      <h2 className="text-2xl font-semibold mt-8 mb-4">4. Next Steps</h2>
+
+      <p className="mb-4">
+        After you have completed the basic setup and experimented with the quick start example, consider the following:
+      </p>
+
+      <ul className="list-disc pl-6 mb-4">
+        <li><strong>Dive into Advanced Features:</strong> Explore the "Using the Library" section for a deeper understanding of the API and advanced use cases.</li>
+        <li><strong>Experiment and Customize:</strong> Modify the configuration and try out different functions to see how they can benefit your project.</li>
+        <li><strong>Seek Help:</strong> If you run into any issues or have questions, check out our FAQs and support resources.</li>
+      </ul>
+
+      <p className="mt-8 mb-4">Happy coding, and welcome aboard!</p>
+    </DocsLayout>
+  )
+}
+
