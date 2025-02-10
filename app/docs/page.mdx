@@ -8,6 +8,16 @@ import { Navigation } from "@/components/navigation";
 
 # Documentation
 
+## Overview
+
+scrap-ai is a powerful AI-driven web scraping library that makes data extraction simple and efficient. Our library combines natural language processing with robust web scraping capabilities to help you gather data from any website with minimal configuration.
+
+Key features:
+- 🤖 AI-powered scraping with natural language instructions
+- 🔄 Real-time updates via webhooks
+- 🛡️ Built-in rate limiting and error handling
+- 📦 Simple, promise-based API
+
 ## Getting Started
 
 Welcome to **scrap-ai**! This section is designed to help you set up and begin using the library quickly. Here, you'll find:
@@ -23,9 +33,11 @@ To install scrap-ai, use your preferred package manager:
 After installation, you need to set up your API key:
 
 <CodeBlock language="javascript">
+{`
 import { ScrapeClient } from "scrap-ai";
 
 const client = new ScrapeClient("YOUR_API_KEY");
+`}
 
 </CodeBlock>
 
@@ -38,6 +50,7 @@ const client = new ScrapeClient("YOUR_API_KEY");
 Here's a simple example to get you started with web scraping:
 
 <CodeBlock language="javascript">
+{`
 import { ScrapeClient } from "scrap-ai";
 
 const client = new ScrapeClient("YOUR_API_KEY");
@@ -56,9 +69,9 @@ console.error("Error:", error.message);
 }
 
 scrapeWebsite();
+`}
 
 </CodeBlock>
-
 This example initiates a scraping job for "https://example.com", extracting all paragraph text, and sends the results to your specified webhook URL.
 
 ## Using the Library
@@ -71,12 +84,14 @@ Once you have scrap-ai installed, dive into the rich set of features it offers. 
 
 The main class for interacting with the scrap-ai API.
 
-<CodeBlock language="javascript">
+<CodeBlock language="typescript">
+  {`
 class ScrapeClient {
   constructor(apiKey: string);
   scrape(url: string, instructions: string, webhookUrl: string): Promise<{ jobId: string }>;
   getJobStatus(jobId: string): Promise<{ status: string, progress: number }>;
 }
+`}
 </CodeBlock>
 
 #### scrape(url, instructions, webhookUrl)
@@ -104,6 +119,7 @@ Retrieves the status of a scraping job.
 #### Scraping Product Information
 
 <CodeBlock language="javascript">
+{`
 const client = new ScrapeClient("YOUR_API_KEY");
 
 async function scrapeProductInfo(productUrl) {
@@ -120,23 +136,26 @@ console.error("Error scraping product info:", error.message);
 }
 
 scrapeProductInfo("https://example.com/product");
+`}
 
 </CodeBlock>
 
 #### Monitoring Job Progress
 
 <CodeBlock language="javascript">
+{`
 async function monitorJob(jobId) {
   try {
     const status = await client.getJobStatus(jobId);
-    console.log(`Job ${jobId} status:`, status.status);
-    console.log(`Progress: ${status.progress}%`);
+    console.log(\`Job \${jobId} status:\`, status.status);
+    console.log(\`Progress: \${status.progress}%\`);
   } catch (error) {
     console.error("Error checking job status:", error.message);
   }
 }
 
 monitorJob("job_123456");
+`}
 
 </CodeBlock>
 
@@ -145,11 +164,13 @@ monitorJob("job_123456");
 scrap-ai offers several configuration options to customize its behavior:
 
 <CodeBlock language="javascript">
+  {`
 const client = new ScrapeClient("YOUR_API_KEY", {
   timeout: 30000, // Request timeout in milliseconds
   maxRetries: 3, // Maximum number of retries for failed requests
   userAgent: "Custom User Agent String", // Set a custom User-Agent header
 });
+`}
 </CodeBlock>
 
 ## Webhooks
@@ -178,6 +199,7 @@ To secure your webhook endpoints:
 2. Implement webhook signature verification to ensure the authenticity of incoming requests.
 
 <CodeBlock language="javascript">
+{`
 const crypto = require('crypto');
 
 function verifyWebhookSignature(payload, signature, secret) {
@@ -185,6 +207,7 @@ const hmac = crypto.createHmac('sha256', secret);
 const digest = hmac.update(payload).digest('hex');
 return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
 }
+`}
 
 </CodeBlock>
 
