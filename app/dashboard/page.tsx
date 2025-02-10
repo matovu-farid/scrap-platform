@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { useToast } from "@/components/ui/use-toast"
 import { ThemeSwitcher } from "@/components/theme-switcher"
 import { APIKeyManagement } from "@/components/dashboard/api-key-management"
 import { HistoricalScrapes } from "@/components/dashboard/historical-scrapes"
@@ -13,6 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import Logo from "@/components/logo"
 import { Key, History, Play, User, Menu } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
 export default function Dashboard() {
   const router = useRouter()
