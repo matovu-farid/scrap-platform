@@ -1,0 +1,268 @@
+import { CodeBlock } from "@/components/docs/code-block";
+import { Callout } from "@/components/docs/callout";
+
+export const metadata = {
+  title: "API Reference | Scrap Platform",
+  description:
+    "Complete reference for using the scrap-ai v0.0.5 library for AI-powered web scraping",
+};
+
+<div className="max-w-3xl mx-auto space-y-16">
+  # API Reference
+
+{" "}
+
+<div className="prose prose-gray dark:prose-invert">
+  The **scrap-ai v0.0.5** library provides a powerful yet straightforward API
+  for asynchronous web scraping with customizable prompts and webhook callback
+  support. This guide covers the primary classes, methods, and types available,
+  helping you integrate web scraping into your projects with ease.
+</div>
+
+  <section className="space-y-8">
+    ## ScrapeClient
+
+    <div className="space-y-6">
+      The core of the library is the `ScrapeClient` class, which handles the initiation of scraping tasks
+      and verification of webhook callbacks.
+
+      ### Constructor
+
+      #### `new ScrapeClient(apiKey: string)`
+
+      Creates a new instance of the `ScrapeClient`.
+
+      <div className="space-y-4">
+        <div>
+          <h5 className="font-semibold mb-2">Parameters:</h5>
+          <ul className="list-disc list-inside space-y-2">
+            <li>
+              <strong>apiKey</strong>: <code className="text-sm bg-muted px-1 py-0.5 rounded">string</code>
+              <div className="ml-6 text-muted-foreground">Your unique API key for authentication.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h5 className="font-semibold mb-2">Example:</h5>
+          <CodeBlock language="typescript">
+            {`import { ScrapeClient } from "scrap-ai";
+
+const client = new ScrapeClient("your-api-key");`}
+
+</CodeBlock>
+</div>
+</div>
+
+      ### Methods
+
+      #### `scrape(url: string, prompt: string, callbackUrl: string): Promise<void>`
+
+      Initiates a scraping operation. When the operation is complete, the results are sent via a POST request
+      to the specified `callbackUrl`.
+
+      <div className="space-y-4">
+        <div>
+          <h5 className="font-semibold mb-2">Parameters:</h5>
+          <ul className="list-disc list-inside space-y-4">
+            <li>
+              <strong>url</strong>: <code className="text-sm bg-muted px-1 py-0.5 rounded">string</code>
+              <div className="ml-6 text-muted-foreground">The URL of the webpage you want to scrape.</div>
+            </li>
+            <li>
+              <strong>prompt</strong>: <code className="text-sm bg-muted px-1 py-0.5 rounded">string</code>
+              <div className="ml-6 text-muted-foreground">
+                Instructions that define what data to extract. Customize this prompt to target specific content on the page.
+              </div>
+            </li>
+            <li>
+              <strong>callbackUrl</strong>: <code className="text-sm bg-muted px-1 py-0.5 rounded">string</code>
+              <div className="ml-6 text-muted-foreground">The endpoint where the scraped data will be delivered.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h5 className="font-semibold mb-2">Example:</h5>
+          <CodeBlock language="typescript">
+            {`await client.scrape(
+
+"https://example.com",
+"Extract all product titles and prices",
+"https://your-api.com/webhook"
+);`}
+
+</CodeBlock>
+</div>
+</div>
+</div>
+
+  </section>
+
+  <section className="space-y-8">
+    ## Callback Response Format
+
+    <div className="space-y-6">
+      When your webhook endpoint receives a callback, the payload will follow this structure:
+
+      <CodeBlock language="typescript">
+        {`interface CallbackResponse {
+
+status: "success" | "error";
+data?: {
+url: string;
+results: any[];
+timestamp: string;
+};
+error?: {
+message: string;
+code: string;
+};
+}`}
+
+</CodeBlock>
+
+      <div className="space-y-2">
+        <ul className="list-disc list-inside space-y-2">
+          <li>
+            <strong>status</strong>: Indicates whether the scraping was successful or
+            if an error occurred.
+          </li>
+          <li>
+            <strong>data</strong>: Present when the operation is successful. Contains:
+            <ul className="list-disc list-inside ml-6 mt-2">
+              <li><strong>url</strong>: The source URL that was scraped.</li>
+              <li><strong>results</strong>: An array of extracted data.</li>
+              <li><strong>timestamp</strong>: The time when the data was processed.</li>
+            </ul>
+          </li>
+          <li>
+            <strong>error</strong>: Present when the scraping fails, providing details about the error.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </section>
+
+  <section className="space-y-8">
+    ## Webhook Verification
+
+    <div className="space-y-6">
+      To ensure the authenticity and integrity of incoming webhook requests, the library provides a method
+      to verify the webhook signature.
+
+      ### `verifyWebhook(options: VerifyWebhookOptions): boolean`
+
+      Validates a webhook request by comparing the provided signature against a generated HMAC.
+
+      <div className="space-y-4">
+        <div>
+          <h5 className="font-semibold mb-2">Parameters:</h5>
+          <div className="ml-4">
+            <strong>options</strong>: <code className="text-sm bg-muted px-1 py-0.5 rounded">VerifyWebhookOptions</code> (object) containing:
+            <ul className="list-disc list-inside space-y-2 mt-2 ml-4">
+              <li>
+                <strong>body</strong>: <code className="text-sm bg-muted px-1 py-0.5 rounded">string</code>
+                <div className="ml-6 text-muted-foreground">The stringified JSON payload from the request.</div>
+              </li>
+              <li>
+                <strong>signature</strong>: <code className="text-sm bg-muted px-1 py-0.5 rounded">string</code>
+                <div className="ml-6 text-muted-foreground">The HMAC SHA-256 signature from the header (<code>x-webhook-signature</code>).</div>
+              </li>
+              <li>
+                <strong>timestamp</strong>: <code className="text-sm bg-muted px-1 py-0.5 rounded">string | number</code>
+                <div className="ml-6 text-muted-foreground">The timestamp from the header (<code>x-webhook-timestamp</code>).</div>
+              </li>
+              <li>
+                <strong>maxAge</strong>: <code className="text-sm bg-muted px-1 py-0.5 rounded">number</code> (optional)
+                <div className="ml-6 text-muted-foreground">Maximum allowed age for the webhook (default is 300,000 milliseconds or 5 minutes).</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div>
+          <h5 className="font-semibold mb-2">Example:</h5>
+          <CodeBlock language="typescript">
+            {`const isValid = client.verifyWebhook({
+
+body: JSON.stringify(req.body),
+signature: req.headers["x-webhook-signature"],
+timestamp: req.headers["x-webhook-timestamp"],
+maxAge: 300000, // 5 minutes in milliseconds
+});
+
+if (!isValid) {
+return res.status(401).json({ error: "Invalid webhook" });
+}`}
+
+</CodeBlock>
+</div>
+</div>
+</div>
+
+  </section>
+
+  <section className="space-y-8">
+    ## Environment Variables
+
+    <div className="space-y-6">
+      <Callout type="info">
+        For the library to function properly, ensure you set the following
+        environment variable in your deployment environment:
+
+        <div className="mt-2 px-4 text-white  py-2 bg-secondary rounded-md font-mono text-sm">
+          SCRAP_API_KEY
+        </div>
+        Your API key for authentication.
+      </Callout>
+    </div>
+
+  </section>
+
+  <section className="space-y-8">
+    ## Additional Resources
+
+    <div className="space-y-8">
+      <div className="grid gap-4">
+        <a
+          href="/docs/getting-started"
+          className="block p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+        >
+          <h3 className="font-semibold">Getting Started</h3>
+          <p className="text-muted-foreground">
+            Learn how to integrate scrap-ai into your project.
+          </p>
+        </a>
+
+        <a
+          href="/docs/examples"
+          className="block p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+        >
+          <h3 className="font-semibold">Usage Examples</h3>
+          <p className="text-muted-foreground">
+            Explore practical examples and sample implementations.
+          </p>
+        </a>
+
+        <a
+          href="/docs/faq"
+          className="block p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+        >
+          <h3 className="font-semibold">FAQ</h3>
+          <p className="text-muted-foreground">
+            Find answers to common questions about the library.
+          </p>
+        </a>
+      </div>
+
+      <div className="prose prose-gray dark:prose-invert">
+        This API reference serves as a comprehensive guide for utilizing the
+        **scrap-ai v0.0.5** library in your projects. For further assistance or
+        inquiries, please reach out to our support team.
+      </div>
+    </div>
+
+  </section>
+</div>
