@@ -3,12 +3,11 @@ import { HeroSection } from "@components/home/hero-section";
 import { FeaturesSection } from "@components/home/features-section";
 import { TestimonialsSection } from "@components/home/testimonials-section";
 import { CTASection } from "@components/home/cta-section";
-import { auth } from "./auth";
 import { redirect } from "next/navigation";
+import { isSignedIn } from "./authActions";
 
 export default async function Home() {
-  const session = await auth();
-  if (session && session.user) {
+  if (await isSignedIn()) {
     redirect("/dashboard");
   }
   return (
