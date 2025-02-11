@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ThemeSwitcher } from "@components/theme-switcher";
 import { Button } from "@components/ui/button";
 import Logo from "@components/logo";
+import { LoginButton } from "./Login";
 
 interface NavItem {
   href: string;
@@ -49,14 +50,7 @@ export function Navigation({ items = defaultItems }: NavigationProps) {
           </li>
         ))}
         <li>
-          <Button
-            asChild
-            variant="secondary"
-            size="sm"
-            className="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
-          >
-            <Link href="/login">Login</Link>
-          </Button>
+          <LoginButton />
         </li>
       </ul>
     </nav>
