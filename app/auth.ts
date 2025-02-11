@@ -4,10 +4,9 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import authConfig from "../auth.config";
 import Passkey from "next-auth/providers/passkey";
-import Resend from "next-auth/providers/resend";
 const prisma = new PrismaClient();
 
-const providers = [Passkey, Resend, ...authConfig.providers];
+const providers = process.env.NODE_ENV === "development" ? [Passkey, ...authConfig.providers] : [...authConfig.providers];
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
