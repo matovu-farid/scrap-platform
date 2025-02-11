@@ -8,9 +8,9 @@ import Resend from "next-auth/providers/resend";
 const prisma = new PrismaClient();
 
 const providers = {
-  ...authConfig.providers,
   Passkey,
   Resend,
+  ...authConfig.providers,
 };
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
