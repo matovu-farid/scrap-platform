@@ -7,11 +7,7 @@ import Passkey from "next-auth/providers/passkey";
 import Resend from "next-auth/providers/resend";
 const prisma = new PrismaClient();
 
-const providers = {
-  Passkey,
-  Resend,
-  ...authConfig.providers,
-};
+const providers = [Passkey, Resend, ...authConfig.providers];
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
