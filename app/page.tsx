@@ -3,8 +3,14 @@ import { HeroSection } from "@components/home/hero-section";
 import { FeaturesSection } from "@components/home/features-section";
 import { TestimonialsSection } from "@components/home/testimonials-section";
 import { CTASection } from "@components/home/cta-section";
+import { auth } from "./auth";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+  if (session && session.user) {
+    redirect("/dashboard");
+  }
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100">
       <Navigation />
