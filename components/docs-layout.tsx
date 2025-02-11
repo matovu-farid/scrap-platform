@@ -3,11 +3,11 @@
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Navigation } from "@/components/navigation";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Navigation } from "@components/navigation";
+import { Button } from "@components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@components/ui/sheet";
+import { ScrollArea } from "@components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { Menu } from "lucide-react";
 
 interface DocsSidebarProps {
@@ -22,7 +22,7 @@ function DocsSidebar({ items, isSignedIn }: DocsSidebarProps) {
     <ScrollArea className="h-full py-6 pl-8 pr-6">
       <h4 className="mb-4 text-sm font-semibold">Documentation</h4>
       <nav className="flex flex-col space-y-2">
-      <Link
+        <Link
           href="/docs/overview"
           className={`text-sm ${
             pathname === "/docs/overview"
