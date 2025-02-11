@@ -3,14 +3,14 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ThemeSwitcher } from "@/components/theme-switcher";
-import { APIKeyManagement } from "@/components/dashboard/api-key-management";
-import { HistoricalScrapes } from "@/components/dashboard/historical-scrapes";
-import { InteractiveScrapeTest } from "@/components/dashboard/interactive-scrape-test";
-import { AccountSettings } from "@/components/dashboard/account-settings";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
-import Logo from "@/components/logo";
+import { ThemeSwitcher } from "@components/theme-switcher";
+import { APIKeyManagement } from "@components/dashboard/api-key-management";
+import { HistoricalScrapes } from "@components/dashboard/historical-scrapes";
+import { InteractiveScrapeTest } from "@components/dashboard/interactive-scrape-test";
+import { AccountSettings } from "@components/dashboard/account-settings";
+import { Button } from "@components/ui/button";
+import { Sheet, SheetContent } from "@components/ui/sheet";
+import Logo from "@components/logo";
 import { Key, History, Play, User, Menu } from "lucide-react";
 
 export default function Dashboard() {

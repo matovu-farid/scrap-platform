@@ -1,7 +1,7 @@
 "use client";
 
-import { DocsSidebar } from "@/app/components/docs/sidebar";
-import { Navigation } from "@/components/navigation";
+import { DocsSidebar } from "@components/docs/sidebar";
+import { Navigation } from "@components/navigation";
 
 export default function DocsLayout({
   children,

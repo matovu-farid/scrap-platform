@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@components/ui/button";
+import { Input } from "@components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import {
   AlertDialog,
@@ -14,8 +14,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { useToast } from "@/hooks/use-toast";
+} from "@components/ui/alert-dialog";
+import { useToast } from "@hooks/use-toast";
 
 export function APIKeyManagement() {
   const [apiKey, setApiKey] = useState("sk-1234567890abcdef1234567890abcdef");

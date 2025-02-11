@@ -1,6 +1,6 @@
 "use client";
 
-import { DocsSidebar } from "./docs/sidebar";
+import { DocsSidebar } from "./sidebar";
 
 export function DocsLayout({ children }: { children: React.ReactNode }) {
   return (

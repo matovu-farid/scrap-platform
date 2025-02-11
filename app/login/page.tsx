@@ -2,10 +2,10 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Button } from "@components/ui/button"
+import { Input } from "@components/ui/input"
 import { motion } from "framer-motion"
-import { Navigation } from "@/components/navigation"
+import { Navigation } from "@components/navigation"
 
 export default function Login() {
   const [email, setEmail] = useState("")

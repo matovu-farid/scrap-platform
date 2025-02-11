@@ -45,7 +45,7 @@ export function TestimonialsSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 * index }}
           >
-            <p className="mb-4 italic">"{testimonial.content}"</p>
+            <p className="mb-4 italic">{`"${testimonial.content}"`}</p>
             <p className="font-semibold">{testimonial.name}</p>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               {testimonial.role}

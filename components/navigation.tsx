@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ThemeSwitcher } from "@/components/theme-switcher";
-import { Button } from "@/components/ui/button";
-import Logo from "@/components/logo";
+import { ThemeSwitcher } from "@components/theme-switcher";
+import { Button } from "@components/ui/button";
+import Logo from "@components/logo";
 
 interface NavItem {
   href: string;
