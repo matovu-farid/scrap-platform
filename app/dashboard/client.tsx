@@ -160,10 +160,10 @@ export default function DashboardClient() {
           <Button
             variant="ghost"
             className="md:hidden mr-2 text-gray-600 dark:text-gray-300"
-            asChild
+            // asChild
             onClick={() => setIsMobileMenuOpen(true)}
           >
-            <Menu className="h-5 w-5" />
+            {/* <Menu className="h-5 w-5" /> */}
           </Button>
           <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
             Dashboard
