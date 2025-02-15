@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { redirect, useRouter } from "next/navigation";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { ThemeSwitcher } from "@components/theme-switcher";
 import { APIKeyManagement } from "@components/dashboard/api-key-management";
