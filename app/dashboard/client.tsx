@@ -10,7 +10,7 @@ import { AccountSettings } from "@components/dashboard/account-settings";
 import { Button } from "@components/ui/button";
 import { Sheet, SheetContent } from "@components/ui/sheet";
 import Logo from "@components/logo";
-import { Key, History, Play, User, Menu } from "lucide-react";
+import { Key, History, Play, User, Menu, SquareMenu } from "lucide-react";
 import { logout } from "@/authActions";
 
 export default function DashboardClient() {
@@ -167,7 +167,10 @@ export default function DashboardClient() {
           >
             <Menu className="h-5 w-5" />
           </Button> */}
-          <Menu className="h-5 w-5" onClick={() => setIsMobileMenuOpen(true)} />
+          <SquareMenu
+            className="h-5 w-5"
+            onClick={() => setIsMobileMenuOpen(true)}
+          />
 
           <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
             Dashboard
