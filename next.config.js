@@ -16,7 +16,7 @@ const nextConfig = {
   // Configure `pageExtensions` to include markdown and MDX files
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   reactStrictMode: true,
-  swcMinify: false,
+  swcMinify: true,
   experimental: {
     serverActions: true,
   },
