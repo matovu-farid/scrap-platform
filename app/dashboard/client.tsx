@@ -165,7 +165,7 @@ export default function DashboardClient() {
             asChild
             onClick={() => setIsMobileMenuOpen(true)}
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-5 w-5 md:hidden mr-2 text-gray-600 dark:text-gray-300" />
           </Button> */}
           <SquareMenu
             className="h-5 w-5"
