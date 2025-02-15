@@ -143,7 +143,7 @@ export default function DashboardClient() {
       </div>
 
       {/* Mobile Sidebar */}
-      {/* <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+      <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
         <SheetContent
           side="left"
           className="w-64 p-0 bg-white dark:bg-gray-800"
@@ -152,7 +152,7 @@ export default function DashboardClient() {
             <SidebarContent />
           </div>
         </SheetContent>
-      </Sheet> */}
+      </Sheet>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
@@ -181,7 +181,6 @@ export default function DashboardClient() {
           </motion.div>
         </main> 
         */}
-
       </div>
     </div>
   );
