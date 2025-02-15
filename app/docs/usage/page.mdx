@@ -61,7 +61,7 @@ productUrl,
 );
 console.log("Product info scraping initiated:", result.jobId);
 } catch (error) {
-console.error("Error scraping product info:", error.message);
+console.log("Error scraping product info:", error.message);
 }
 }
 
@@ -80,7 +80,7 @@ async function monitorJob(jobId) {
     console.log(\`Job \${jobId} status:\`, status.status);
     console.log(\`Progress: \${status.progress}%\`);
   } catch (error) {
-    console.error("Error checking job status:", error.message);
+    console.log("Error checking job status:", error.message);
   }
 }
 
