@@ -157,16 +157,7 @@ export default function DashboardClient() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16 flex items-center px-6">
-          {/* <Button
-         
-          
-            // variant="ghost"
-            className="md:hidden mr-2 text-gray-600 dark:text-gray-300"
-            asChild
-            onClick={() => setIsMobileMenuOpen(true)}
-          >
-            <Menu className="h-5 w-5 md:hidden mr-2 text-gray-600 dark:text-gray-300" />
-          </Button> */}
+       
           <SquareMenu
             className="h-5 w-5 md:hidden mr-2 text-gray-600 dark:text-gray-300"
             onClick={() => setIsMobileMenuOpen(true)}
