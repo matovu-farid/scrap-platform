@@ -177,7 +177,7 @@ export default function DashboardClient() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {renderContent()}
+            {/* {renderContent()} */}
           </motion.div>
         </main>
       </div>
