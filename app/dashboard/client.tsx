@@ -22,7 +22,7 @@ export default function DashboardClient() {
       {/* Logo and Title */}
       <div className="flex items-center p-4">
         <Logo className="w-8 h-8 mr-2" />
-        <span className="text-lg font-semibold bg-gradient-to-r from-[#7FFFD4] to-[#4169E1] bg-clip-text text-transparent">
+        <span className="text-lg font-semibold from-[#7FFFD4] to-[#4169E1] bg-gradient-to-r bg-clip-text text-transparent">
           scrap-ai
         </span>
       </div>
@@ -36,11 +36,12 @@ export default function DashboardClient() {
               setActiveTab("api-key");
               setIsMobileMenuOpen(false);
             }}
-            className={`flex items-center w-full px-4 py-2 text-sm rounded-lg ${
-              activeTab === "api-key"
+            className={
+              "flex items-center w-full px-4 py-2 text-sm rounded-lg " +
+              (activeTab === "api-key"
                 ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white"
-                : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-            }`}
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700")
+            }
           >
             <Key className="mr-2 h-4 w-4" />
             API Key
@@ -52,11 +53,12 @@ export default function DashboardClient() {
               setActiveTab("historical-scrapes");
               setIsMobileMenuOpen(false);
             }}
-            className={`flex items-center w-full px-4 py-2 text-sm rounded-lg ${
-              activeTab === "historical-scrapes"
+            className={
+              "flex items-center w-full px-4 py-2 text-sm rounded-lg " +
+              (activeTab === "historical-scrapes"
                 ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white"
-                : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-            }`}
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700")
+            }
           >
             <History className="mr-2 h-4 w-4" />
             Historical Scrapes
@@ -68,11 +70,12 @@ export default function DashboardClient() {
               setActiveTab("scrape-test");
               setIsMobileMenuOpen(false);
             }}
-            className={`flex items-center w-full px-4 py-2 text-sm rounded-lg ${
-              activeTab === "scrape-test"
+            className={
+              "flex items-center w-full px-4 py-2 text-sm rounded-lg " +
+              (activeTab === "scrape-test"
                 ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white"
-                : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-            }`}
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700")
+            }
           >
             <Play className="mr-2 h-4 w-4" />
             Scrape Test
@@ -84,11 +87,12 @@ export default function DashboardClient() {
               setActiveTab("account");
               setIsMobileMenuOpen(false);
             }}
-            className={`flex items-center w-full px-4 py-2 text-sm rounded-lg ${
-              activeTab === "account"
+            className={
+              "flex items-center w-full px-4 py-2 text-sm rounded-lg " +
+              (activeTab === "account"
                 ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white"
-                : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-            }`}
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700")
+            }
           >
             <User className="mr-2 h-4 w-4" />
             Account

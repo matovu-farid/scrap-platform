@@ -1,12 +1,6 @@
 import { CodeBlock } from "@components/docs/code-block";
 import { Callout } from "@components/docs/callout";
 
-export const metadata = {
-  title: "API Reference | Scrap Platform",
-  description:
-    "Complete reference for using the scrap-ai v0.0.5 library for AI-powered web scraping",
-};
-
 <div className="max-w-3xl mx-auto space-y-16">
   # API Reference
 
@@ -85,12 +79,15 @@ const client = new ScrapeClient("your-api-key");`}
         <div>
           <h5 className="font-semibold mb-2">Example:</h5>
           <CodeBlock language="typescript">
-            {`await client.scrape(
 
-"https://example.com",
-"Extract all product titles and prices",
-"https://your-api.com/webhook"
-);`}
+      {`
+      await client.scrape(
+
+      "https://example.com",
+      "Extract all product titles and prices",
+      "https://your-api.com/webhook"
+      )
+      `}
 
 </CodeBlock>
 </div>
