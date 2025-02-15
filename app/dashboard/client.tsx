@@ -156,7 +156,7 @@ export default function DashboardClient() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16 flex items-center px-6">
+        {/* <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16 flex items-center px-6">
           <Button
             variant="ghost"
             size="icon"
@@ -168,19 +168,18 @@ export default function DashboardClient() {
           <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
             Dashboard
           </h1>
-        </header>
+        </header> */}
 
-        {/* <main className="flex-1 overflow-auto p-6 bg-gray-50 dark:bg-gray-900">
+        <main className="flex-1 overflow-auto p-6 bg-gray-50 dark:bg-gray-900">
           <motion.div
             key={activeTab}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {renderContent()} 
+            {renderContent()}
           </motion.div>
-        </main> 
-        */}
+        </main>
       </div>
     </div>
   );
