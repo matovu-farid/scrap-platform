@@ -168,7 +168,7 @@ export default function DashboardClient() {
             <Menu className="h-5 w-5 md:hidden mr-2 text-gray-600 dark:text-gray-300" />
           </Button> */}
           <SquareMenu
-            className="h-5 w-5"
+            className="h-5 w-5 md:hidden mr-2 text-gray-600 dark:text-gray-300"
             onClick={() => setIsMobileMenuOpen(true)}
           />
 
