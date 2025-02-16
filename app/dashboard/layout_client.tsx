@@ -1,23 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
 import { ThemeSwitcher } from "@components/theme-switcher";
-import { APIKeyManagement } from "@components/dashboard/api-key-management";
-import { HistoricalScrapes } from "@components/dashboard/historical-scrapes";
-import { InteractiveScrapeTest } from "@components/dashboard/interactive-scrape-test";
-import { AccountSettings } from "@components/dashboard/account-settings";
 import { Button } from "@components/ui/button";
 import { Sheet, SheetContent } from "@components/ui/sheet";
 import Logo from "@components/logo";
-import { Key, History, Play, User, Menu, SquareMenu } from "lucide-react";
+import { Key, History, Play, User, SquareMenu } from "lucide-react";
 import { logout } from "@/authActions";
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-export default function DashboardClient() {
-  const [activeTab, setActiveTab] = useState("api-key");
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+const SidebarContent = ({
+  closeMobileMenu,
+}: {
+  closeMobileMenu?: () => void;
+}) => {
+  const pathname = usePathname();
 
-  const SidebarContent = () => (
+  const isActive = (path: string) => pathname === path;
+
+  return (
     <>
       {/* Logo and Title */}
       <div className="flex items-center p-4">
@@ -30,73 +32,61 @@ export default function DashboardClient() {
       {/* Navigation */}
       <nav className="flex-1 mt-4">
         <div className="px-2 space-y-1">
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab("api-key");
-              setIsMobileMenuOpen(false);
-            }}
+          <Link
+            href="/dashboard"
+            onClick={closeMobileMenu}
             className={
               "flex items-center w-full px-4 py-2 text-sm rounded-lg " +
-              (activeTab === "api-key"
+              (isActive("/dashboard")
                 ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white"
                 : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700")
             }
           >
             <Key className="mr-2 h-4 w-4" />
             API Key
-          </button>
+          </Link>
 
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab("historical-scrapes");
-              setIsMobileMenuOpen(false);
-            }}
+          <Link
+            href="/dashboard/historical-scrapes"
+            onClick={closeMobileMenu}
             className={
               "flex items-center w-full px-4 py-2 text-sm rounded-lg " +
-              (activeTab === "historical-scrapes"
+              (isActive("/dashboard/historical-scrapes")
                 ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white"
                 : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700")
             }
           >
             <History className="mr-2 h-4 w-4" />
             Historical Scrapes
-          </button>
+          </Link>
 
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab("scrape-test");
-              setIsMobileMenuOpen(false);
-            }}
+          <Link
+            href="/dashboard/scrape-test"
+            onClick={closeMobileMenu}
             className={
               "flex items-center w-full px-4 py-2 text-sm rounded-lg " +
-              (activeTab === "scrape-test"
+              (isActive("/dashboard/scrape-test")
                 ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white"
                 : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700")
             }
           >
             <Play className="mr-2 h-4 w-4" />
             Scrape Test
-          </button>
+          </Link>
 
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab("account");
-              setIsMobileMenuOpen(false);
-            }}
+          <Link
+            href="/dashboard/account"
+            onClick={closeMobileMenu}
             className={
               "flex items-center w-full px-4 py-2 text-sm rounded-lg " +
-              (activeTab === "account"
+              (isActive("/dashboard/account")
                 ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white"
                 : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700")
             }
           >
             <User className="mr-2 h-4 w-4" />
             Account
-          </button>
+          </Link>
         </div>
       </nav>
 
@@ -117,21 +107,14 @@ export default function DashboardClient() {
       </div>
     </>
   );
+};
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case "api-key":
-        return <APIKeyManagement />;
-      case "historical-scrapes":
-        return <HistoricalScrapes />;
-      case "scrape-test":
-        return <InteractiveScrapeTest />;
-      case "account":
-        return <AccountSettings />;
-      default:
-        return <APIKeyManagement />;
-    }
-  };
+export  function DashboardLayoutClient({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900">
@@ -149,7 +132,9 @@ export default function DashboardClient() {
           className="w-64 p-0 bg-white dark:bg-gray-800"
         >
           <div className="flex flex-col h-full">
-            <SidebarContent />
+            <SidebarContent
+              closeMobileMenu={() => setIsMobileMenuOpen(false)}
+            />
           </div>
         </SheetContent>
       </Sheet>
@@ -157,26 +142,17 @@ export default function DashboardClient() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16 flex items-center px-6">
-       
           <SquareMenu
             className="h-5 w-5 md:hidden mr-2 text-gray-600 dark:text-gray-300"
             onClick={() => setIsMobileMenuOpen(true)}
           />
-
           <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
             Dashboard
           </h1>
         </header>
 
         <main className="flex-1 overflow-auto p-6 bg-gray-50 dark:bg-gray-900">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {renderContent()}
-          </motion.div>
+          {children}
         </main>
       </div>
     </div>

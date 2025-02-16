@@ -16,34 +16,50 @@ import {
   AlertDialogTrigger,
 } from "@components/ui/alert-dialog";
 import { useToast } from "@hooks/use-toast";
+import { findOrCreateUsageKey, purgeApiKey } from "@lib/api_key";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { LoaderComponent } from "@components/loader";
 
 export function APIKeyManagement() {
-  const [apiKey, setApiKey] = useState("sk-1234567890abcdef1234567890abcdef");
+  const queryClient = useQueryClient();
+
+  const { data: apiKey, isLoading: isLoadingApiKey } = useQuery({
+    queryKey: ["usageKey"],
+    queryFn: () => findOrCreateUsageKey(),
+  });
+
+  const { mutate: regenerateMyApiKey } = useMutation({
+    mutationFn: () => purgeApiKey(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["usageKey"] });
+      setShowApiKey(true); // Show the new key automatically
+      toast({
+        title: "API Key Regenerated",
+        description: "Your new API key has been generated.",
+      });
+    },
+  });
+
   const [showApiKey, setShowApiKey] = useState(false);
   const { toast } = useToast();
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(apiKey);
+    navigator.clipboard.writeText(apiKey?.value || "");
     toast({
       title: "API Key Copied",
       description: "Your API key has been copied to the clipboard.",
     });
   };
 
-  const regenerateApiKey = () => {
-    const newApiKey =
-      "sk-" +
-      Math.random().toString(36).substring(2, 15) +
-      Math.random().toString(36).substring(2, 15);
-    setApiKey(newApiKey);
-    setShowApiKey(true); // Show the new key automatically
-    toast({
-      title: "API Key Regenerated",
-      description: "Your new API key has been generated.",
-    });
-  };
+  const maskedApiKey = ".".repeat(apiKey?.value.length || 0);
 
-  const maskedApiKey = ".".repeat(apiKey.length);
+  if (isLoadingApiKey) {
+    return <LoaderComponent />;
+  }
+
+  if (!apiKey) {
+    return <div>No API key found</div>;
+  }
 
   return (
     <div className="space-y-4 bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-md w-full">
@@ -51,7 +67,7 @@ export function APIKeyManagement() {
         <div className="relative flex-grow">
           <Input
             type="text"
-            value={showApiKey ? apiKey : maskedApiKey}
+            value={showApiKey ? apiKey.value : maskedApiKey}
             readOnly
             className="pr-24 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 font-mono"
           />
@@ -100,7 +116,7 @@ export function APIKeyManagement() {
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              onClick={regenerateApiKey}
+              onClick={() => regenerateMyApiKey()}
               className="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
             >
               Regenerate

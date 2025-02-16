@@ -5,6 +5,8 @@ import {
   APIGatewayClient,
   CreateApiKeyCommand,
   CreateUsagePlanKeyCommand,
+  DeleteApiKeyCommand,
+  DeleteUsagePlanKeyCommand,
   GetUsagePlanKeyCommand,
 } from "@aws-sdk/client-api-gateway";
 import { prisma } from "../prisma";
@@ -59,6 +61,35 @@ async function getApiKey() {
   }
 }
 
+async function deleteApiKey() {
+  try {
+    const session = await auth();
+    const email = session?.user?.email || "";
+    const apiKey = await prisma.apiKey.findUnique({
+      where: {
+        email,
+      },
+    });
+    const command = new DeleteApiKeyCommand({
+      apiKey: apiKey?.keyId || "",
+    });
+    await client.send(command);
+    return { value: apiKey?.value || "", id: apiKey?.keyId || "" };
+  } catch (error) {
+    console.log("-".repeat(100));
+    console.log({ error });
+    console.log("-".repeat(100));
+  }
+}
+
+async function deleteApiKeyFromDB() {
+  const session = await auth();
+  const email = session?.user?.email || "";
+  const apiKey = await prisma.apiKey.delete({
+    where: { email },
+  });
+}
+
 export async function findOrCreateApiKey() {
   const apiKey = await getApiKey();
   if (apiKey.value) {
@@ -98,10 +129,32 @@ async function getUsageKey() {
   }
 }
 
+async function deleteUsageKey() {
+  try {
+    const apiKey = await findOrCreateApiKey();
+
+    const command = new DeleteUsagePlanKeyCommand({
+      usagePlanId: process.env.AWS_USAGE_PLAN_ID || "", // required
+      keyId: apiKey.id, // required
+    });
+    await client.send(command);
+  } catch (error) {
+    console.log("-".repeat(100));
+    console.log({ error });
+    console.log("-".repeat(100));
+  }
+}
+
 export async function findOrCreateUsageKey() {
   const usageKey = await getUsageKey();
   if (usageKey.value) {
     return usageKey;
   }
   return createUsageKey();
+}
+
+export async function purgeApiKey() {
+  await deleteUsageKey();
+  await deleteApiKey();
+  await deleteApiKeyFromDB();
 }
