@@ -1,7 +1,7 @@
 {
     "features": {
-        "requireAuth": false,
-        "enableBilling": false,
+        "requireAuth": true,
+        "enableBilling": true,
         "enableDocs": true
     }
 }
