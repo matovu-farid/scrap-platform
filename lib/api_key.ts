@@ -5,7 +5,6 @@ import {
   APIGatewayClient,
   CreateApiKeyCommand,
   CreateUsagePlanKeyCommand,
-  GetApiKeyCommand,
   GetUsagePlanKeyCommand,
 } from "@aws-sdk/client-api-gateway";
 import { prisma } from "../prisma";
@@ -106,5 +105,3 @@ export async function findOrCreateUsageKey() {
   }
   return createUsageKey();
 }
-
-
