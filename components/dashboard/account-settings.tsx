@@ -54,7 +54,7 @@ export function AccountSettings() {
         <ul className="list-disc pl-5 space-y-2">
           <li>
             <a
-              href="/docs"
+              href="/docs/overview"
               className="text-blue-600 dark:text-blue-400 hover:underline"
             >
               Documentation

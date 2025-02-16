@@ -43,7 +43,7 @@ export function APIKeyManagement() {
     });
   };
 
-  const maskedApiKey = apiKey.replace(/[^-]/g, "•");
+  const maskedApiKey = ".".repeat(apiKey.length);
 
   return (
     <div className="space-y-4 bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-md w-full">
