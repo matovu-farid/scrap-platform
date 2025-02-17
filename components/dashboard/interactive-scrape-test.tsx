@@ -5,6 +5,7 @@ import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { Textarea } from "@components/ui/textarea";
 import { Progress } from "@components/ui/progress";
+import { scrape } from "@lib/scrap";
 
 export function InteractiveScrapeTest() {
   const [url, setUrl] = useState("");
@@ -37,6 +38,7 @@ export function InteractiveScrapeTest() {
         ]);
       }
     }
+    await scrape(url, prompt);
 
     setScrapingResult({
       totalLinks: 5,
