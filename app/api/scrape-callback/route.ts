@@ -2,8 +2,12 @@ import { findOrCreateUsageKey } from "@lib/api_key";
 import { redis, setCache } from "@lib/cache";
 import { headers } from "next/headers";
 import { NextRequest } from "next/server";
-import { ScrapeClient, isLinksEvent, isScrapedEvent } from "scrap-ai";
-import { isExploreEventData } from "scrap-ai/script/webHooks";
+import {
+  ScrapeClient,
+  isLinksEvent,
+  isScrapedEvent,
+  isExploreEvent,
+} from "scrap-ai";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -33,7 +37,7 @@ export async function POST(req: NextRequest) {
     const links = body.data.links;
 
     await redis.sadd("scrape-links", links);
-  } else if (isExploreEventData(body)) {
+  } else if (isExploreEvent(body)) {
     const url = body.data.url;
     await redis.set(`scrape-exploring`, url);
   }
@@ -47,10 +51,28 @@ export async function GET(req: NextRequest) {
 
   const links = await redis.smembers("scrape-links");
   const results = await redis.get("scrape-results");
-  const message = `Links: ${links} \n Results: ${results}`;
+  const exploring = await redis.get("scrape-exploring");
+  let message = "";
+  if (exploring) {
+    message += ` Exploring:\n ${exploring}\n`;
+  }
+  if (links) {
+    message = ` Links:\n ${links}\n`;
+  }
+  if (results) {
+    message += ` Results:\n ${results}\n`;
+  }
+
+  if (links && results) {
+    message = ` Links: ${links} \n Results: ${results}`;
+  }
   const customReadable = new ReadableStream({
     start(controller) {
-      controller.enqueue(encoder.encode(`${message}\n\n`));
+      setTimeout(() => {
+        if (message) {
+          controller.enqueue(encoder.encode(`${message}\n\n`));
+        }
+      }, 1000);
     },
   });
   return new Response(customReadable, {
