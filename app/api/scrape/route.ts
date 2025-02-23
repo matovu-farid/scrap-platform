@@ -1,27 +1,16 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
+import { scrape } from "@lib/scrap";
+import { z } from "zod";
 
 export async function POST(request: Request) {
-  const { apiKey, targetUrl, webhookUrl } = await request.json();
-
-  try {
-    const response = await axios.post("https://api.example.com/scrape", {
-      apiKey,
-      targetUrl,
-      webhookUrl,
-      instructions: "Extract all relevant information from this webpage",
-    });
-
-    if (!response.data.success) {
-      throw new Error(response.data.error || "Scraping failed");
-    }
-
-    return NextResponse.json({ message: "Scraping initiated successfully" });
-  } catch (error) {
-    console.log("Scraping error:", error);
-    return NextResponse.json(
-      { error: "An error occurred during scraping" },
-      { status: 500 }
-    );
-  }
+  const data = await request.json();
+  const { url, prompt } = z
+    .object({
+      url: z.string(),
+      prompt: z.string(),
+    })
+    .parse(data);
+  await scrape(url, prompt);
+  return NextResponse.json({ message: "Scraping initiated successfully" });
 }
