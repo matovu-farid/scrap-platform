@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     body: JSON.stringify(body),
     signature: signature,
     timestamp: timestamp,
-    maxAge: 500 * 60 * 1000, // Optional: customize max age (default 5 minutes)
+    maxAge: 5 * 60 * 1000, // Optional: customize max age (default 5 minutes)
   });
 
   if (!isValid) {
