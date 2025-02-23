@@ -3,8 +3,7 @@ import { redis, setCache } from "@lib/cache";
 import { headers } from "next/headers";
 import { NextRequest } from "next/server";
 import { ScrapeClient, isLinksEvent, isScrapedEvent } from "scrap-ai";
-
-
+import { isExploreEventData } from "scrap-ai/script/webHooks";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -33,8 +32,10 @@ export async function POST(req: NextRequest) {
   } else if (isLinksEvent(body)) {
     const links = body.data.links;
 
-
     await redis.sadd("scrape-links", links);
+  } else if (isExploreEventData(body)) {
+    const url = body.data.url;
+    await redis.set(`scrape-exploring`, url);
   }
 
   return new Response("OK", { status: 200 });
@@ -61,5 +62,4 @@ export async function GET(req: NextRequest) {
       "Content-Type": "text/event-stream; charset=utf-8",
     },
   });
-  
 }
