@@ -68,13 +68,7 @@ export async function GET(req: NextRequest) {
     rawExploredLinks,
     rawDiscoveredLinks,
   });
-  const links = RedisValuesSchema.links.parse(rawLinks);
-  const results = RedisValuesSchema.results.parse(rawResults);
-  const exploring = RedisValuesSchema.exploring.parse(rawExploring);
-  const totalExploredLinks =
-    RedisValuesSchema.totalExploredLinks.parse(rawExploredLinks);
-  const totalDiscoveredLinks =
-    RedisValuesSchema.totalDiscoveredLinks.parse(rawDiscoveredLinks);
+
   let intervalId: NodeJS.Timeout;
   req.signal.addEventListener("abort", () => {
     clearInterval(intervalId);
@@ -84,6 +78,14 @@ export async function GET(req: NextRequest) {
   const customReadable = new ReadableStream({
     start(controller) {
       intervalId = setInterval(() => {
+        const links = RedisValuesSchema.links.parse(rawLinks);
+        const results = RedisValuesSchema.results.parse(rawResults);
+        const exploring = RedisValuesSchema.exploring.parse(rawExploring);
+        const totalExploredLinks =
+          RedisValuesSchema.totalExploredLinks.parse(rawExploredLinks);
+        const totalDiscoveredLinks =
+          RedisValuesSchema.totalDiscoveredLinks.parse(rawDiscoveredLinks);
+
         // Calculate progress percentage
         const progress =
           totalDiscoveredLinks > 0
@@ -106,6 +108,11 @@ export async function GET(req: NextRequest) {
           controller.enqueue(
             encoder.encode(`data: ${JSON.stringify(validatedData)}\n\n`)
           );
+          if (results) {
+            console.log("Stream closed, interval cleared.");
+            controller.close();
+            clearInterval(intervalId);
+          }
         } catch (error) {
           console.error("Data validation error:", error);
           // Send an error state that the client can handle
@@ -122,7 +129,6 @@ export async function GET(req: NextRequest) {
       console.log("Stream cancelled, interval cleared.");
     },
   });
-  
 
   return new Response(customReadable, {
     headers: {
