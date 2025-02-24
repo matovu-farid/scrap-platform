@@ -22,7 +22,6 @@ export async function POST(req: NextRequest) {
   if (!isValid) {
     return new Response("Invalid webhook", { status: 401 });
   }
-  console.log({ isValid });
 
   // Create a streaming response
 
@@ -35,6 +34,8 @@ export async function POST(req: NextRequest) {
   } else if (isExploreEvent(body)) {
     const url = body.data.url;
     await redis.set(`scrape-exploring`, url);
+    await redis.set(`scrape-explored-links`, body.data.explored || 0);
+    await redis.set(`scrape-discovered-links`, body.data.found || 0);
   }
 
   return new Response("OK", { status: 200 });
@@ -47,26 +48,36 @@ export async function GET(req: NextRequest) {
   const links = await redis.smembers("scrape-links");
   const results = await redis.get("scrape-results");
   const exploring = await redis.get("scrape-exploring");
-  let message = "";
-  if (exploring) {
-    message += ` Exploring:\n ${exploring}\n`;
-  }
-  if (links) {
-    message = ` Links:\n ${links}\n`;
-  }
-  if (results) {
-    message += ` Results:\n ${results}\n`;
-  }
+  const totalExploredLinks = await redis.get("scrape-explored-links") as number;
+  const totalDiscoveredLinks = await redis.get("scrape-discovered-links") as number;
 
-  if (links && results) {
-    message = ` Links: ${links} \n Results: ${results}`;
-  }
+
   const customReadable = new ReadableStream({
     start(controller) {
-      setTimeout(() => {
-        if (message) {
-          controller.enqueue(encoder.encode(`${message}\n\n`));
+      setInterval(() => {
+        let message = "message";
+        if (exploring) {
+          message = `Exploring:\n${exploring}`;
+          controller.enqueue(encoder.encode(`data: ${message}\n\n`));
         }
+        if (links) {
+          message = `Links:\n${links}`;
+          controller.enqueue(encoder.encode(`data: ${message}\n\n`));
+        }
+        if (results) {
+          message = `Results:\n${results}`;
+          controller.enqueue(encoder.encode(`data: ${message}\n\n`));
+        }
+        if (totalExploredLinks) {
+          message = `Explored Links:\n${totalExploredLinks}`;
+          controller.enqueue(encoder.encode(`data: ${message}\n\n`));
+        }
+        if (totalDiscoveredLinks) {
+            message = `Discovered Links:\n${totalDiscoveredLinks}`;
+          controller.enqueue(encoder.encode(`data: ${message}\n\n`));
+        }
+        
+
       }, 1000);
     },
   });
@@ -77,6 +88,7 @@ export async function GET(req: NextRequest) {
       "Content-Encoding": "none",
       "Cache-Control": "no-cache, no-transform",
       "Content-Type": "text/event-stream; charset=utf-8",
+      "Access-Control-Allow-Origin": "*",
     },
   });
 }
