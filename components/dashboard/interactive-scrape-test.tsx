@@ -6,6 +6,7 @@ import { Input } from "@components/ui/input";
 import { Textarea } from "@components/ui/textarea";
 import { Progress } from "@components/ui/progress";
 import { scrape } from "@lib/scrap";
+import { ScrapeProgressSchema } from "@lib/schemas/scrape-progress";
 
 export function InteractiveScrapeTest() {
   const [url, setUrl] = useState("");
@@ -13,38 +14,46 @@ export function InteractiveScrapeTest() {
   const [isScrapingInProgress, setIsScrapingInProgress] = useState(false);
   const [progress, setProgress] = useState(0);
   const [discoveredLinks, setDiscoveredLinks] = useState<string[]>([]);
-  const [message, setMessage] = useState("");
-  const [exploring, setExploring] = useState<string[]>([]);
-
-  type ScrapingResult = {
-    totalLinks: number;
-    dataExtracted: string;
-  };
-  const [scrapingResult, setScrapingResult] = useState<ScrapingResult | null>(
-    null
-  );
+  const [exploring, setExploring] = useState<string | null>(null);
+  const [totalExploredLinks, setTotalExploredLinks] = useState(0);
+  const [totalDiscoveredLinks, setTotalDiscoveredLinks] = useState(0);
+  const [results, setResults] = useState<any | null>(null);
 
   useEffect(() => {
-    const evtSource = new EventSource(
-      "http://localhost:3000/api/scrape-callback"
-    );
+    const evtSource = new EventSource("/api/scrape-callback");
+
     evtSource.onmessage = (event) => {
-      if (event.data.startsWith("Exploring\n")) {
-        setExploring(event.data.replace("Exploring\n", ""));
-      }
-      if (event.data.startsWith("Links\n")) {
-        setDiscoveredLinks(event.data.replace("Links\n", ""));
-      }
-      if (event.data.startsWith("Results\n")) {
-        setScrapingResult(event.data.replace("Results\n", ""));
+      try {
+        const rawData = JSON.parse(event.data);
+
+        // Handle error state from server
+        if (rawData.error) {
+          console.error("Server data error:", rawData.error);
+          return;
+        }
+
+        // Validate the data against the schema
+        const data = ScrapeProgressSchema.parse(rawData);
+        console.log({ data });
+
+        setExploring(data.exploring);
+        setDiscoveredLinks(data.links ?? []);
+        setResults(data.results);
+        setProgress(data.progress);
+        setTotalExploredLinks(data.totalExploredLinks);
+        setTotalDiscoveredLinks(data.totalDiscoveredLinks);
+        if (data.progress === 100) {
+          setIsScrapingInProgress(false);
+        }
+      } catch (error) {
+        console.error("Error parsing or validating SSE data:", error);
       }
     };
+
     evtSource.onerror = (err) => {
       console.error("EventSource failed:", err);
     };
-    evtSource.onmessage = (event) => {
-      setMessage(event.data);
-    };
+
     return () => {
       evtSource.close();
     };
@@ -54,15 +63,12 @@ export function InteractiveScrapeTest() {
     setIsScrapingInProgress(true);
     setProgress(0);
     setDiscoveredLinks([]);
-    setScrapingResult(null);
+    setResults(null);
+    setExploring(null);
+    setTotalExploredLinks(0);
+    setTotalDiscoveredLinks(0);
 
     await scrape(url, prompt);
-
-    setScrapingResult({
-      totalLinks: 5,
-      dataExtracted: "Sample extracted data...",
-    });
-    setIsScrapingInProgress(false);
   };
 
   return (
@@ -82,43 +88,50 @@ export function InteractiveScrapeTest() {
       />
       <Button
         onClick={startScraping}
-        disabled={isScrapingInProgress || !url || !prompt}
-        className="bg-gradient-to-r from-[#7FFFD4] to-[#4169E1] hover:opacity-90 transition-opacity text-gray-900 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={isScrapingInProgress || !url.trim() || !prompt.trim()}
+        className={`w-full transition-all font-semibold ${
+          isScrapingInProgress || !url.trim() || !prompt.trim()
+            ? "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+            : "bg-gradient-to-r from-[#7FFFD4] to-[#4169E1] hover:opacity-90 text-gray-900"
+        }`}
       >
         {isScrapingInProgress ? "Scraping..." : "Start Scraping"}
       </Button>
-      <div className="space-y-2">
-        <p className="text-gray-900 dark:text-gray-100">{message}</p>
-      </div>
+
       {isScrapingInProgress && (
         <div className="space-y-2">
           <Progress value={progress} className="w-full" />
           <p className="text-gray-900 dark:text-gray-100">
-            Scraping in progress: {progress}%
+            Progress: {progress}%
+          </p>
+          {exploring && (
+            <p className="text-gray-900 dark:text-gray-100">
+              Currently exploring: {exploring}
+            </p>
+          )}
+          <p className="text-gray-900 dark:text-gray-100">
+            Links explored: {totalExploredLinks} / {totalDiscoveredLinks}
           </p>
           <h3 className="font-semibold text-gray-900 dark:text-white">
             Discovered Links:
           </h3>
           <ul className="list-disc pl-5 text-gray-900 dark:text-gray-100">
-            {discoveredLinks.map((link, index) => (
+            {discoveredLinks?.map((link, index) => (
               <li key={index}>{link}</li>
             ))}
           </ul>
         </div>
       )}
-      {scrapingResult && (
+
+      {results && (
         <div className="space-y-2">
           <h3 className="font-semibold text-gray-900 dark:text-white">
-            Scraping Result:
+            Scraping Results:
           </h3>
-          <p className="text-gray-900 dark:text-gray-100">
-            Total Links Found: {scrapingResult.totalLinks}
-          </p>
-          <p className="text-gray-900 dark:text-gray-100">Extracted Data:</p>
-          <pre className="bg-white dark:bg-gray-600 p-4 rounded-lg border border-gray-200 dark:border-gray-500 text-gray-900 dark:text-white">
-            {scrapingResult.dataExtracted}
+          <pre className="bg-white dark:bg-gray-600 p-4 rounded-lg border border-gray-200 dark:border-gray-500 text-gray-900 dark:text-white overflow-auto">
+            {JSON.stringify(results, null, 2)}
           </pre>
-          <Button className="bg-gradient-to-r from-[#7FFFD4] to-[#4169E1] hover:opacity-90 transition-opacity text-gray-900 font-semibold">
+          <Button className="w-full bg-gradient-to-r from-[#7FFFD4] to-[#4169E1] hover:opacity-90 transition-opacity text-gray-900 font-semibold">
             Export Data
           </Button>
         </div>

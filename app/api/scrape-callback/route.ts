@@ -3,6 +3,13 @@ import { getScrapeClient } from "@lib/scrap";
 import { headers } from "next/headers";
 import { NextRequest } from "next/server";
 import { isLinksEvent, isScrapedEvent, isExploreEvent } from "scrap-ai";
+import {
+  RedisValuesSchema,
+  ScrapeProgressSchema,
+} from "@lib/schemas/scrape-progress";
+import { z } from "zod";
+
+type ScrapeProgress = z.infer<typeof ScrapeProgressSchema>;
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -29,8 +36,9 @@ export async function POST(req: NextRequest) {
     await redis.set(`scrape-results`, body.data.results);
   } else if (isLinksEvent(body)) {
     const links = body.data.links;
-
-    await redis.sadd("scrape-links", links);
+    links.forEach((link) => {
+      redis.sadd("scrape-links", link);
+    });
   } else if (isExploreEvent(body)) {
     const url = body.data.url;
     await redis.set(`scrape-exploring`, url);
@@ -45,44 +53,68 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const encoder = new TextEncoder();
 
-  const links = await redis.smembers("scrape-links");
-  const results = await redis.get("scrape-results");
-  const exploring = await redis.get("scrape-exploring");
-  const totalExploredLinks = await redis.get("scrape-explored-links") as number;
-  const totalDiscoveredLinks = await redis.get("scrape-discovered-links") as number;
+  // Fetch and validate Redis values
+  const rawLinks = await redis.smembers("scrape-links");
+  const rawResults = await redis.get("scrape-results");
+  const rawExploring = await redis.get("scrape-exploring");
+  const rawExploredLinks = await redis.get("scrape-explored-links");
+  const rawDiscoveredLinks = await redis.get("scrape-discovered-links");
 
+  // Parse and validate the values
+  console.log({
+    rawLinks,
+    rawResults,
+    rawExploring,
+    rawExploredLinks,
+    rawDiscoveredLinks,
+  });
+  const links = RedisValuesSchema.links.parse(rawLinks);
+  const results = RedisValuesSchema.results.parse(rawResults);
+  const exploring = RedisValuesSchema.exploring.parse(rawExploring);
+  const totalExploredLinks =
+    RedisValuesSchema.totalExploredLinks.parse(rawExploredLinks);
+  const totalDiscoveredLinks =
+    RedisValuesSchema.totalDiscoveredLinks.parse(rawDiscoveredLinks);
 
   const customReadable = new ReadableStream({
     start(controller) {
       setInterval(() => {
-        let message = "message";
-        if (exploring) {
-          message = `Exploring:\n${exploring}`;
-          controller.enqueue(encoder.encode(`data: ${message}\n\n`));
-        }
-        if (links) {
-          message = `Links:\n${links}`;
-          controller.enqueue(encoder.encode(`data: ${message}\n\n`));
-        }
-        if (results) {
-          message = `Results:\n${results}`;
-          controller.enqueue(encoder.encode(`data: ${message}\n\n`));
-        }
-        if (totalExploredLinks) {
-          message = `Explored Links:\n${totalExploredLinks}`;
-          controller.enqueue(encoder.encode(`data: ${message}\n\n`));
-        }
-        if (totalDiscoveredLinks) {
-            message = `Discovered Links:\n${totalDiscoveredLinks}`;
-          controller.enqueue(encoder.encode(`data: ${message}\n\n`));
-        }
-        
+        // Calculate progress percentage
+        const progress =
+          totalDiscoveredLinks > 0
+            ? Math.round((totalExploredLinks / totalDiscoveredLinks) * 100)
+            : 0;
 
+        // Create the data object
+        const data: ScrapeProgress = {
+          exploring,
+          links,
+          results,
+          totalExploredLinks,
+          totalDiscoveredLinks,
+          progress,
+        };
+
+        // Validate the data against the schema
+        try {
+          const validatedData = ScrapeProgressSchema.parse(data);
+          controller.enqueue(
+            encoder.encode(`data: ${JSON.stringify(validatedData)}\n\n`)
+          );
+        } catch (error) {
+          console.error("Data validation error:", error);
+          // Send an error state that the client can handle
+          controller.enqueue(
+            encoder.encode(
+              `data: ${JSON.stringify({ error: "Invalid data state" })}\n\n`
+            )
+          );
+        }
       }, 1000);
     },
   });
+
   return new Response(customReadable, {
-    // Set the headers for Server-Sent Events (SSE)
     headers: {
       Connection: "keep-alive",
       "Content-Encoding": "none",
