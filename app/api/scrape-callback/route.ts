@@ -75,10 +75,15 @@ export async function GET(req: NextRequest) {
     RedisValuesSchema.totalExploredLinks.parse(rawExploredLinks);
   const totalDiscoveredLinks =
     RedisValuesSchema.totalDiscoveredLinks.parse(rawDiscoveredLinks);
+  let intervalId: NodeJS.Timeout;
+  req.signal.addEventListener("abort", () => {
+    clearInterval(intervalId);
+    console.log("Client disconnected, interval cleared.");
+  });
 
   const customReadable = new ReadableStream({
     start(controller) {
-      setInterval(() => {
+      intervalId = setInterval(() => {
         // Calculate progress percentage
         const progress =
           totalDiscoveredLinks > 0
@@ -112,7 +117,12 @@ export async function GET(req: NextRequest) {
         }
       }, 1000);
     },
+    cancel() {
+      clearInterval(intervalId);
+      console.log("Stream cancelled, interval cleared.");
+    },
   });
+  
 
   return new Response(customReadable, {
     headers: {
