@@ -76,7 +76,7 @@ export function InteractiveScrapeTest() {
         onChange={(e) => setPrompt(e.target.value)}
         className="bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 placeholder:text-gray-500 dark:placeholder:text-gray-300 text-gray-900 dark:text-white min-h-[100px] focus:border-blue-500 dark:focus:border-blue-400"
       />
-      <form action={() => scrape(url, prompt)}>
+      <form action={async ()=>await scrape(url, prompt)}>
         <Button
           type="submit"
           className="bg-gradient-to-r from-[#7FFFD4] to-[#4169E1] hover:opacity-90 transition-opacity text-gray-900 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"

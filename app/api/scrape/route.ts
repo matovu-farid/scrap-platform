@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import axios from "axios";
 import { scrape } from "@lib/scrap";
 import { z } from "zod";
 

@@ -1,5 +1,5 @@
-import { findOrCreateUsageKey } from "@lib/api_key";
 import { redis, setCache } from "@lib/cache";
+import { getScrapeClient } from "@lib/scrap";
 import { headers } from "next/headers";
 import { NextRequest } from "next/server";
 import {
@@ -10,16 +10,14 @@ import {
 } from "scrap-ai";
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { value: apiUsageKey } = await findOrCreateUsageKey();
-
-  const scrapeClient = new ScrapeClient(apiUsageKey);
+  const scrapeClient = await getScrapeClient();
   const headersList = await headers();
   const signature = headersList.get("x-webhook-signature") || "";
   const timestamp = headersList.get("x-webhook-timestamp") || "";
+  const body = await req.json();
 
   const isValid = scrapeClient.verifyWebhook({
-    body: JSON.stringify(body),
+    body,
     signature: signature,
     timestamp: timestamp,
     maxAge: 5 * 60 * 1000, // Optional: customize max age (default 5 minutes)
@@ -28,6 +26,7 @@ export async function POST(req: NextRequest) {
   if (!isValid) {
     return new Response("Invalid webhook", { status: 401 });
   }
+  console.log({ isValid });
 
   // Create a streaming response
 
