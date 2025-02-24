@@ -7,7 +7,7 @@ import {
   RedisValuesSchema,
   ScrapeProgressSchema,
 } from "@lib/schemas/scrape-progress";
-import { z } from "zod";
+import { z, ZodError } from "zod";
 
 type ScrapeProgress = z.infer<typeof ScrapeProgressSchema>;
 
@@ -78,15 +78,6 @@ export async function GET(req: NextRequest) {
             "scrape-discovered-links"
           );
 
-        // Parse and validate the values
-        console.log({
-          rawLinks,
-          rawResults,
-          rawExploring,
-          rawExploredLinks,
-          rawDiscoveredLinks,
-        });
-
         const links = RedisValuesSchema.links.parse(rawLinks);
         const results = RedisValuesSchema.results.parse(rawResults);
         const exploring = RedisValuesSchema.exploring.parse(rawExploring);
@@ -114,22 +105,25 @@ export async function GET(req: NextRequest) {
         // Validate the data against the schema
         try {
           const validatedData = ScrapeProgressSchema.parse(data);
+          // check if controller is open
+
           controller.enqueue(
             encoder.encode(`data: ${JSON.stringify(validatedData)}\n\n`)
           );
+
           if (results) {
             console.log("Stream closed, interval cleared.");
             controller.close();
             clearInterval(intervalId);
           }
         } catch (error) {
-          console.error("Data validation error:", error);
-          // Send an error state that the client can handle
-          controller.enqueue(
-            encoder.encode(
-              `data: ${JSON.stringify({ error: "Invalid data state" })}\n\n`
-            )
-          );
+          if (error instanceof ZodError) {
+            console.log("Data validation error:", error.message);
+          } else if (error instanceof Error) {
+            console.log("Data validation error:", error.message);
+          } else {
+            console.log("Data validation error:", error);
+          }
         }
       }, 1000);
     },
