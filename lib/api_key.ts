@@ -43,10 +43,20 @@ async function createApiKey() {
   return { value: value || "", id: id || "" };
 }
 
-async function getApiKey() {
+async function getApiKey(userId?: string) {
   try {
-    const session = await auth();
-    const email = session?.user?.email || "";
+    let email = "";
+    if (userId) {
+      const data = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { email: true },
+      });
+      email = data?.email || "";
+    } else {
+      const session = await auth();
+      email = session?.user?.email || "";
+    }
+
     const apiKey = await prisma.apiKey.findUnique({
       where: {
         email,
@@ -90,10 +100,16 @@ async function deleteApiKeyFromDB() {
   });
 }
 
-export async function findOrCreateApiKey() {
-  const apiKey = await getApiKey();
+export async function findOrCreateApiKey(userId?: string) {
+  const apiKey = await getApiKey(userId);
   if (apiKey.value) {
     return apiKey;
+  }
+  /**
+   * If the user is not authenticated, throw an error. We don't want to create an API key for unauthenticated users.
+   */
+  if (!(await auth())) {
+    throw new Error("Unauthorized");
   }
   return createApiKey();
 }
@@ -110,9 +126,9 @@ async function createUsageKey() {
   return { value: value || "", id: apiKey.id };
 }
 
-async function getUsageKey() {
+async function getUsageKey(userId?: string) {
   try {
-    const apiKey = await findOrCreateApiKey();
+    const apiKey = await findOrCreateApiKey(userId);
 
     const command = new GetUsagePlanKeyCommand({
       usagePlanId: process.env.AWS_USAGE_PLAN_ID || "", // required
@@ -145,10 +161,16 @@ async function deleteUsageKey() {
   }
 }
 
-export async function findOrCreateUsageKey() {
-  const usageKey = await getUsageKey();
+export async function findOrCreateUsageKey(userId?: string) {
+  const usageKey = await getUsageKey(userId);
   if (usageKey.value) {
     return usageKey;
+  }
+  /**
+   * If the user is not authenticated, throw an error
+   */
+  if (!(await auth())) {
+    throw new Error("Unauthorized");
   }
   return createUsageKey();
 }

@@ -2,19 +2,15 @@ import { redis, setCache } from "@lib/cache";
 import { getScrapeClient } from "@lib/scrap";
 import { headers } from "next/headers";
 import { NextRequest } from "next/server";
-import {
-  ScrapeClient,
-  isLinksEvent,
-  isScrapedEvent,
-  isExploreEvent,
-} from "scrap-ai";
+import { isLinksEvent, isScrapedEvent, isExploreEvent } from "scrap-ai";
 
 export async function POST(req: NextRequest) {
-  const scrapeClient = await getScrapeClient();
+  const body = await req.json();
+  console.log({ id: body.id });
+  const scrapeClient = await getScrapeClient(body.id);
   const headersList = await headers();
   const signature = headersList.get("x-webhook-signature") || "";
   const timestamp = headersList.get("x-webhook-timestamp") || "";
-  const body = await req.json();
 
   const isValid = scrapeClient.verifyWebhook({
     body,
