@@ -5,12 +5,12 @@ import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { Textarea } from "@components/ui/textarea";
 import { Progress } from "@components/ui/progress";
-import { scrape } from "@lib/scrap";
+import { clearCachedResults, scrape } from "@lib/scrap";
 import { ScrapeProgressSchema } from "@lib/schemas/scrape-progress";
 
 export function InteractiveScrapeTest() {
-  const [url, setUrl] = useState("");
-  const [prompt, setPrompt] = useState("");
+  const [url, setUrl] = useState("https://matovu-farid.com");
+  const [prompt, setPrompt] = useState("What is this website about?");
   const [isScrapingInProgress, setIsScrapingInProgress] = useState(false);
   const [progress, setProgress] = useState(0);
   const [discoveredLinks, setDiscoveredLinks] = useState<string[]>([]);
@@ -18,46 +18,56 @@ export function InteractiveScrapeTest() {
   const [totalExploredLinks, setTotalExploredLinks] = useState(0);
   const [totalDiscoveredLinks, setTotalDiscoveredLinks] = useState(0);
   const [results, setResults] = useState<any | null>(null);
-
+  const [eventSource, setEventSource] = useState<EventSource | null>(null);
   useEffect(() => {
-    const evtSource = new EventSource("/api/scrape-callback");
+    clearCachedResults().then(() => {
+      const evtSource = new EventSource("/api/scrape-callback");
+      setEventSource(evtSource);
 
-    evtSource.onmessage = (event) => {
-      try {
-        const rawData = JSON.parse(event.data);
+      evtSource.onmessage = (event) => {
+        try {
+          const rawData = JSON.parse(event.data);
 
-        // Handle error state from server
-        if (rawData.error) {
-          console.error("Server data error:", rawData.error);
-          return;
+          // Handle error state from server
+          if (rawData.error) {
+            console.error("Server data error:", rawData.error);
+            return;
+          }
+
+          // Validate the data against the schema
+          const data = ScrapeProgressSchema.parse(rawData);
+          console.log({ data });
+
+          setExploring(data.exploring);
+          setDiscoveredLinks(data.links ?? []);
+          setResults(data.results);
+          setProgress(data.progress);
+          setTotalExploredLinks(data.totalExploredLinks);
+          setTotalDiscoveredLinks(data.totalDiscoveredLinks);
+          if (data.progress === 100) {
+            setIsScrapingInProgress(false);
+          }
+        } catch (error) {
+          console.error("Error parsing or validating SSE data:", error);
         }
+      };
 
-        // Validate the data against the schema
-        const data = ScrapeProgressSchema.parse(rawData);
-        console.log({ data });
+      evtSource.onerror = (err) => {
+        console.error("EventSource failed:", err);
 
-        setExploring(data.exploring);
-        setDiscoveredLinks(data.links ?? []);
-        setResults(data.results);
-        setProgress(data.progress);
-        setTotalExploredLinks(data.totalExploredLinks);
-        setTotalDiscoveredLinks(data.totalDiscoveredLinks);
-        if (data.progress === 100) {
-          setIsScrapingInProgress(false);
-        }
-      } catch (error) {
-        console.error("Error parsing or validating SSE data:", error);
-      }
-    };
+        setEventSource(null);
+      };
 
-    evtSource.onerror = (err) => {
-      console.error("EventSource failed:", err);
-    };
-
-    return () => {
-      evtSource.close();
-    };
+      return () => {
+        evtSource.close();
+      };
+    });
   }, []);
+  useEffect(() => {
+    if (results && eventSource) {
+      eventSource.close();
+    }
+  }, [results, eventSource]);
 
   const startScraping = async () => {
     setIsScrapingInProgress(true);
@@ -128,7 +138,7 @@ export function InteractiveScrapeTest() {
           <h3 className="font-semibold text-gray-900 dark:text-white">
             Scraping Results:
           </h3>
-          <pre className="bg-white dark:bg-gray-600 p-4 rounded-lg border border-gray-200 dark:border-gray-500 text-gray-900 dark:text-white overflow-auto">
+          <pre className="bg-white dark:bg-gray-600 p-4 rounded-lg border border-gray-200 dark:border-gray-500 text-gray-900 dark:text-white overflow-x-auto whitespace-pre-wrap break-words max-w-full">
             {JSON.stringify(results, null, 2)}
           </pre>
           <Button className="w-full bg-gradient-to-r from-[#7FFFD4] to-[#4169E1] hover:opacity-90 transition-opacity text-gray-900 font-semibold">

@@ -36,14 +36,19 @@ export async function POST(req: NextRequest) {
     await redis.set(`scrape-results`, body.data.results);
   } else if (isLinksEvent(body)) {
     const links = body.data.links;
+    const tx = redis.multi();
     links.forEach((link) => {
-      redis.sadd("scrape-links", link);
+      tx.sadd("scrape-links", link);
     });
+    await tx.exec();
   } else if (isExploreEvent(body)) {
     const url = body.data.url;
-    await redis.set(`scrape-exploring`, url);
-    await redis.set(`scrape-explored-links`, body.data.explored || 0);
-    await redis.set(`scrape-discovered-links`, body.data.found || 0);
+    await redis
+      .multi()
+      .set(`scrape-exploring`, url)
+      .set(`scrape-explored-links`, body.data.explored || 0)
+      .set(`scrape-discovered-links`, body.data.found || 0)
+      .exec();
   }
 
   return new Response("OK", { status: 200 });
@@ -53,22 +58,6 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const encoder = new TextEncoder();
 
-  // Fetch and validate Redis values
-  const rawLinks = await redis.smembers("scrape-links");
-  const rawResults = await redis.get("scrape-results");
-  const rawExploring = await redis.get("scrape-exploring");
-  const rawExploredLinks = await redis.get("scrape-explored-links");
-  const rawDiscoveredLinks = await redis.get("scrape-discovered-links");
-
-  // Parse and validate the values
-  console.log({
-    rawLinks,
-    rawResults,
-    rawExploring,
-    rawExploredLinks,
-    rawDiscoveredLinks,
-  });
-
   let intervalId: NodeJS.Timeout;
   req.signal.addEventListener("abort", () => {
     clearInterval(intervalId);
@@ -77,7 +66,27 @@ export async function GET(req: NextRequest) {
 
   const customReadable = new ReadableStream({
     start(controller) {
-      intervalId = setInterval(() => {
+      intervalId = setInterval(async () => {
+        // Fetch and validate Redis values
+        const rawLinks = await redis.smembers("scrape-links");
+
+        const [rawResults, rawExploring, rawExploredLinks, rawDiscoveredLinks] =
+          await redis.mget(
+            "scrape-results",
+            "scrape-exploring",
+            "scrape-explored-links",
+            "scrape-discovered-links"
+          );
+
+        // Parse and validate the values
+        console.log({
+          rawLinks,
+          rawResults,
+          rawExploring,
+          rawExploredLinks,
+          rawDiscoveredLinks,
+        });
+
         const links = RedisValuesSchema.links.parse(rawLinks);
         const results = RedisValuesSchema.results.parse(rawResults);
         const exploring = RedisValuesSchema.exploring.parse(rawExploring);
