@@ -7,6 +7,7 @@ import { Textarea } from "@components/ui/textarea";
 import { Progress } from "@components/ui/progress";
 import { clearCachedResults, scrape } from "@lib/scrap";
 import { ScrapeProgressSchema } from "@lib/schemas/scrape-progress";
+import { Loader2 } from "lucide-react";
 
 export function InteractiveScrapeTest() {
   const [url, setUrl] = useState("https://matovu-farid.com");
@@ -19,6 +20,8 @@ export function InteractiveScrapeTest() {
   const [totalDiscoveredLinks, setTotalDiscoveredLinks] = useState(0);
   const [results, setResults] = useState<any | null>(null);
   const [eventSource, setEventSource] = useState<EventSource | null>(null);
+  const [isAiProcessing, setIsAiProcessing] = useState(false);
+
   useEffect(() => {
     clearCachedResults().then(() => {
       const evtSource = new EventSource("/api/scrape-callback");
@@ -44,7 +47,14 @@ export function InteractiveScrapeTest() {
           setProgress(data.progress);
           setTotalExploredLinks(data.totalExploredLinks);
           setTotalDiscoveredLinks(data.totalDiscoveredLinks);
-          if (data.progress === 100) {
+
+          // Set AI processing state when scraping is complete but results aren't ready
+          if (data.progress === 100 && !data.results) {
+            setIsAiProcessing(true);
+          }
+
+          if (data.results) {
+            setIsAiProcessing(false);
             setIsScrapingInProgress(false);
           }
         } catch (error) {
@@ -130,6 +140,15 @@ export function InteractiveScrapeTest() {
               <li key={index}>{link}</li>
             ))}
           </ul>
+        </div>
+      )}
+
+      {isAiProcessing && (
+        <div className="flex flex-col items-center justify-center space-y-3 py-4">
+          <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+          <p className="text-gray-900 dark:text-gray-100 text-center">
+            AI is analyzing the scraped content...
+          </p>
         </div>
       )}
 
