@@ -4,6 +4,7 @@ import { findOrCreateUsageKey } from "./api_key";
 import { auth } from "@/auth";
 import { prisma } from "../prisma";
 import { redis } from "./cache";
+import { env } from "@/env";
 
 export async function getScrapeClient(userId?: string) {
   const { value: apiUsageKey } = await findOrCreateUsageKey(userId);
@@ -22,11 +23,10 @@ export async function clearCachedResults() {
     .exec();
 }
 
-
 export async function scrape(url: string, prompt: string) {
   await clearCachedResults();
   const scrapeClient = await getScrapeClient();
-  const callbackUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/scrape-callback`;
+  const callbackUrl = `${env.NEXT_PUBLIC_APP_URL}/api/scrape-callback`;
   const session = await auth();
   const user = await prisma.user.findUnique({
     where: {

@@ -10,10 +10,11 @@ import {
   GetUsagePlanKeyCommand,
 } from "@aws-sdk/client-api-gateway";
 import { prisma } from "../prisma";
+import { env } from "@/env";
 const client = new APIGatewayClient({
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
+    accessKeyId: env.AWS_ACCESS_KEY_ID || "",
+    secretAccessKey: env.AWS_SECRET_ACCESS_KEY || "",
   },
 });
 
@@ -114,12 +115,13 @@ export async function findOrCreateApiKey(userId?: string) {
   return createApiKey();
 }
 async function createUsageKey() {
+
   const apiKey = await findOrCreateApiKey();
 
   const command = new CreateUsagePlanKeyCommand({
-    usagePlanId: process.env.AWS_USAGE_PLAN_ID || "", // required
+    usagePlanId: env.AWS_USAGE_PLAN_ID, // required
     keyId: apiKey.id, // required
-    keyType: process.env.AWS_KEY_TYPE || "", // required
+    keyType: env.AWS_KEY_TYPE, // required
   });
   const { value } = await client.send(command);
 
@@ -131,7 +133,7 @@ async function getUsageKey(userId?: string) {
     const apiKey = await findOrCreateApiKey(userId);
 
     const command = new GetUsagePlanKeyCommand({
-      usagePlanId: process.env.AWS_USAGE_PLAN_ID || "", // required
+      usagePlanId: env.AWS_USAGE_PLAN_ID, // required
       keyId: apiKey.id, // required
     });
     const { value } = await client.send(command);
@@ -150,7 +152,7 @@ async function deleteUsageKey() {
     const apiKey = await findOrCreateApiKey();
 
     const command = new DeleteUsagePlanKeyCommand({
-      usagePlanId: process.env.AWS_USAGE_PLAN_ID || "", // required
+      usagePlanId: env.AWS_USAGE_PLAN_ID , // required
       keyId: apiKey.id, // required
     });
     await client.send(command);
@@ -162,6 +164,7 @@ async function deleteUsageKey() {
 }
 
 export async function findOrCreateUsageKey(userId?: string) {
+
   const usageKey = await getUsageKey(userId);
   if (usageKey.value) {
     return usageKey;

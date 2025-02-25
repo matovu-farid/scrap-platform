@@ -4,10 +4,11 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import authConfig from "../auth.config";
 import Passkey from "next-auth/providers/passkey";
+import { env } from "@/env";
 const prisma = new PrismaClient();
 
 const providers =
-  process.env.NODE_ENV === "development"
+  env.NODE_ENV === "development"
     ? [Passkey, ...authConfig.providers]
     : [...authConfig.providers];
 

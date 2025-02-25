@@ -11,6 +11,12 @@
 // import createMDX from '@next/mdx'
 import createMDX from "@next/mdx";
 import frontmatterPlugin from "remark-frontmatter";
+import { fileURLToPath } from "node:url";
+import createJiti from "jiti";
+const jiti = createJiti(fileURLToPath(import.meta.url));
+ 
+// Import env here to validate during build. Using jiti@^1 we can import .ts files :)
+jiti("./app/env");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Configure `pageExtensions` to include markdown and MDX files
