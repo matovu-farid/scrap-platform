@@ -21,6 +21,7 @@ export function InteractiveScrapeTest() {
   const [results, setResults] = useState<any | null>(null);
   const [eventSource, setEventSource] = useState<EventSource | null>(null);
   const [isAiProcessing, setIsAiProcessing] = useState(false);
+  const [isDiscoveringLinks, setIsDiscoveringLinks] = useState(false);
 
   useEffect(() => {
     clearCachedResults().then(() => {
@@ -40,6 +41,11 @@ export function InteractiveScrapeTest() {
           // Validate the data against the schema
           const data = ScrapeProgressSchema.parse(rawData);
           console.log({ data });
+
+          // If we receive any links, we're past the initial discovery phase
+          if (data.links && data.links.length > 0) {
+            setIsDiscoveringLinks(false);
+          }
 
           setExploring(data.exploring);
           setDiscoveredLinks(data.links ?? []);
@@ -81,6 +87,7 @@ export function InteractiveScrapeTest() {
 
   const startScraping = async () => {
     setIsScrapingInProgress(true);
+    setIsDiscoveringLinks(true);
     setProgress(0);
     setDiscoveredLinks([]);
     setResults(null);
@@ -118,7 +125,16 @@ export function InteractiveScrapeTest() {
         {isScrapingInProgress ? "Scraping..." : "Start Scraping"}
       </Button>
 
-      {isScrapingInProgress && (
+      {isDiscoveringLinks && (
+        <div className="flex flex-col items-center justify-center space-y-3 py-4">
+          <Loader2 className="h-8 w-8 animate-spin text-green-500" />
+          <p className="text-gray-900 dark:text-gray-100 text-center">
+            Discovering links on the page...
+          </p>
+        </div>
+      )}
+
+      {isScrapingInProgress && !isDiscoveringLinks && (
         <div className="space-y-2">
           <Progress value={progress} className="w-full" />
           <p className="text-gray-900 dark:text-gray-100">
