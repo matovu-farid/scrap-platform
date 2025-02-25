@@ -56,7 +56,8 @@
     "scrap-ai": "0.0.32",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",
-    "unified": "^11.0.5"
+    "unified": "^11.0.5",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/node": "20.3.1",
