@@ -13,7 +13,6 @@ import { Switch } from "@components/ui/switch";
 import { Label } from "@components/ui/label";
 import { useTheme } from "next-themes";
 import { jsonSchemaSchema } from "@utils/jsonschema";
-import Ajv from "ajv";
 
 // Dynamically import Ace editor to avoid SSR issues
 const AceEditor = dynamic(
@@ -163,6 +162,7 @@ export function InteractiveScrapeTest() {
         }
         await scrape(url, prompt, parsedSchema);
       } else {
+        console.log("Scraping without schema");
         await scrape(url, prompt);
       }
     } catch (error) {
