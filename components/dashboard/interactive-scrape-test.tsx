@@ -12,6 +12,8 @@ import dynamic from "next/dynamic";
 import { Switch } from "@components/ui/switch";
 import { Label } from "@components/ui/label";
 import { useTheme } from "next-themes";
+import { jsonSchemaSchema } from "@utils/jsonschema";
+import Ajv from "ajv";
 
 // Dynamically import Ace editor to avoid SSR issues
 const AceEditor = dynamic(
@@ -41,7 +43,6 @@ export function InteractiveScrapeTest() {
   const [copied, setCopied] = useState(false);
   const [showSchema, setShowSchema] = useState(false);
   const [schema, setSchema] = useState(`{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
     "title": {
@@ -55,8 +56,12 @@ export function InteractiveScrapeTest() {
   },
   "required": ["title", "summary"]
 }`);
+  const [schemaError, setSchemaError] = useState<string | null>(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
+    if (!isScrapingInProgress) return;
+
     clearCachedResults().then(() => {
       const evtSource = new EventSource("/api/scrape-callback");
       setEventSource(evtSource);
@@ -111,12 +116,33 @@ export function InteractiveScrapeTest() {
         evtSource.close();
       };
     });
-  }, []);
+  }, [isScrapingInProgress]);
   useEffect(() => {
     if (results && eventSource) {
       eventSource.close();
     }
   }, [results, eventSource]);
+
+  const validateSchema = (schemaStr: string) => {
+    try {
+      const parsedSchema = JSON.parse(schemaStr);
+
+      const result = jsonSchemaSchema.safeParse(parsedSchema);
+
+      if (!result.success) {
+        setSchemaError(result.error.errors.map((e) => e.message).join(", "));
+      } else {
+        setSchemaError(null);
+      }
+    } catch (error) {
+      setSchemaError("Invalid JSON syntax");
+    }
+  };
+
+  const handleSchemaChange = (newValue: string) => {
+    setSchema(newValue);
+    validateSchema(newValue);
+  };
 
   const startScraping = async () => {
     setIsScrapingInProgress(true);
@@ -129,13 +155,19 @@ export function InteractiveScrapeTest() {
     setTotalDiscoveredLinks(0);
 
     try {
-      // Parse schema to validate it's proper JSON
-      const parsedSchema = showSchema ? JSON.parse(schema) : undefined;
-      await scrape(url, prompt, parsedSchema);
+      if (showSchema) {
+        const parsedSchema = JSON.parse(schema);
+        const result = jsonSchemaSchema.safeParse(parsedSchema);
+        if (!result.success) {
+          throw new Error("Invalid JSON Schema");
+        }
+        await scrape(url, prompt, parsedSchema);
+      } else {
+        await scrape(url, prompt);
+      }
     } catch (error) {
       console.error("Invalid schema JSON:", error);
       setIsScrapingInProgress(false);
-      // You might want to add error handling UI here
     }
   };
 
@@ -175,11 +207,17 @@ export function InteractiveScrapeTest() {
       {showSchema && (
         <div className="space-y-2">
           <Label>JSON Schema</Label>
-          <div className="h-[300px] w-full rounded-md border border-gray-200 dark:border-gray-500">
+          <div
+            className={`relative h-[300px] w-full rounded-md ${
+              schemaError
+                ? "ring-2 ring-red-500 dark:ring-red-400"
+                : "ring-1 ring-gray-200 dark:ring-gray-500"
+            }`}
+          >
             <AceEditor
               mode="json"
-              theme="monokai"
-              onChange={setSchema}
+              theme={theme === "dark" ? "monokai" : "github"}
+              onChange={handleSchemaChange}
               value={schema}
               name="schema-editor"
               editorProps={{ $blockScrolling: true }}
@@ -190,16 +228,36 @@ export function InteractiveScrapeTest() {
               width="100%"
               height="100%"
               className="rounded-md"
+              style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+              }}
             />
           </div>
+          {schemaError && (
+            <p className="text-sm text-red-500 dark:text-red-400">
+              {schemaError}
+            </p>
+          )}
         </div>
       )}
 
       <Button
         onClick={startScraping}
-        disabled={isScrapingInProgress || !url.trim() || !prompt.trim()}
+        disabled={
+          isScrapingInProgress ||
+          !url.trim() ||
+          !prompt.trim() ||
+          !!(showSchema && schemaError)
+        }
         className={`w-full transition-all font-semibold ${
-          isScrapingInProgress || !url.trim() || !prompt.trim()
+          isScrapingInProgress ||
+          !url.trim() ||
+          !prompt.trim() ||
+          (showSchema && schemaError)
             ? "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
             : "bg-gradient-to-r from-[#7FFFD4] to-[#4169E1] hover:opacity-90 text-gray-900"
         }`}
