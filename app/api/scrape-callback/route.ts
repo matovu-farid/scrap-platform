@@ -13,7 +13,6 @@ type ScrapeProgress = z.infer<typeof ScrapeProgressSchema>;
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  console.log({ id: body.id });
   const scrapeClient = await getScrapeClient(body.id);
   const headersList = await headers();
   const signature = headersList.get("x-webhook-signature") || "";
@@ -25,12 +24,14 @@ export async function POST(req: NextRequest) {
     timestamp: timestamp,
     maxAge: 5 * 60 * 1000, // Optional: customize max age (default 5 minutes)
   });
+  console.log({ isValid });
 
   if (!isValid) {
     return new Response("Invalid webhook", { status: 401 });
   }
 
   // Create a streaming response
+  console.log({body})
 
   if (isScrapedEvent(body)) {
     await redis.set(`scrape-results`, body.data.results);
