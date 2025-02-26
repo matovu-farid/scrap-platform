@@ -8,6 +8,22 @@ import { Progress } from "@components/ui/progress";
 import { clearCachedResults, scrape } from "@lib/scrap";
 import { ScrapeProgressSchema } from "@lib/schemas/scrape-progress";
 import { Loader2, Copy, Check } from "lucide-react";
+import dynamic from "next/dynamic";
+import { Switch } from "@components/ui/switch";
+import { Label } from "@components/ui/label";
+import { useTheme } from "next-themes";
+
+// Dynamically import Ace editor to avoid SSR issues
+const AceEditor = dynamic(
+  async () => {
+    const ace = await import("react-ace");
+    await import("ace-builds/src-noconflict/mode-json");
+    await import("ace-builds/src-noconflict/theme-github");
+    await import("ace-builds/src-noconflict/theme-monokai");
+    return ace;
+  },
+  { ssr: false }
+);
 
 export function InteractiveScrapeTest() {
   const [url, setUrl] = useState("https://matovu-farid.com");
@@ -23,6 +39,22 @@ export function InteractiveScrapeTest() {
   const [isAiProcessing, setIsAiProcessing] = useState(false);
   const [isDiscoveringLinks, setIsDiscoveringLinks] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showSchema, setShowSchema] = useState(false);
+  const [schema, setSchema] = useState(`{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "The title of the content"
+    },
+    "summary": {
+      "type": "string",
+      "description": "A brief summary of the content"
+    }
+  },
+  "required": ["title", "summary"]
+}`);
 
   useEffect(() => {
     clearCachedResults().then(() => {
@@ -96,7 +128,15 @@ export function InteractiveScrapeTest() {
     setTotalExploredLinks(0);
     setTotalDiscoveredLinks(0);
 
-    await scrape(url, prompt);
+    try {
+      // Parse schema to validate it's proper JSON
+      const parsedSchema = showSchema ? JSON.parse(schema) : undefined;
+      await scrape(url, prompt, parsedSchema);
+    } catch (error) {
+      console.error("Invalid schema JSON:", error);
+      setIsScrapingInProgress(false);
+      // You might want to add error handling UI here
+    }
   };
 
   const copyResults = async () => {
@@ -122,6 +162,39 @@ export function InteractiveScrapeTest() {
         onChange={(e) => setPrompt(e.target.value)}
         className="bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 placeholder:text-gray-500 dark:placeholder:text-gray-300 text-gray-900 dark:text-white min-h-[100px] focus:border-blue-500 dark:focus:border-blue-400"
       />
+
+      <div className="flex items-center space-x-2">
+        <Switch
+          id="schema-mode"
+          checked={showSchema}
+          onCheckedChange={setShowSchema}
+        />
+        <Label htmlFor="schema-mode">Use Custom Schema</Label>
+      </div>
+
+      {showSchema && (
+        <div className="space-y-2">
+          <Label>JSON Schema</Label>
+          <div className="h-[300px] w-full rounded-md border border-gray-200 dark:border-gray-500">
+            <AceEditor
+              mode="json"
+              theme="monokai"
+              onChange={setSchema}
+              value={schema}
+              name="schema-editor"
+              editorProps={{ $blockScrolling: true }}
+              setOptions={{
+                showLineNumbers: true,
+                tabSize: 2,
+              }}
+              width="100%"
+              height="100%"
+              className="rounded-md"
+            />
+          </div>
+        </div>
+      )}
+
       <Button
         onClick={startScraping}
         disabled={isScrapingInProgress || !url.trim() || !prompt.trim()}

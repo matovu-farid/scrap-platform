@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { prisma } from "../prisma";
 import { redis } from "./cache";
 import { env } from "@/env";
+import { z } from "zod";
 
 export async function getScrapeClient(userId?: string) {
   const { value: apiUsageKey } = await findOrCreateUsageKey(userId);
@@ -23,20 +24,26 @@ export async function clearCachedResults() {
     .exec();
 }
 
-export async function scrape(url: string, prompt: string) {
-  await clearCachedResults();
-  const scrapeClient = await getScrapeClient();
-  const callbackUrl = `${env.NEXT_PUBLIC_APP_URL}/api/scrape-callback`;
-  const session = await auth();
-  const user = await prisma.user.findUnique({
-    where: {
-      email: session?.user?.email || "",
+export async function scrape(
+  url: string,
+  prompt: string,
+  schema?: Record<string, any>
+) {
+  const response = await fetch("/api/scrape", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-    select: {
-      id: true,
-    },
+    body: JSON.stringify({
+      url,
+      prompt,
+      schema,
+    }),
   });
-  const userId = user?.id || "";
 
-  await scrapeClient.scrape(url, prompt, callbackUrl, userId);
+  if (!response.ok) {
+    throw new Error("Failed to start scraping");
+  }
+
+  return response.json();
 }
