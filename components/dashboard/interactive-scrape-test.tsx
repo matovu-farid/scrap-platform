@@ -7,7 +7,7 @@ import { Textarea } from "@components/ui/textarea";
 import { Progress } from "@components/ui/progress";
 import { clearCachedResults, scrape } from "@lib/scrap";
 import { ScrapeProgressSchema } from "@lib/schemas/scrape-progress";
-import { Loader2 } from "lucide-react";
+import { Loader2, Copy, Check } from "lucide-react";
 
 export function InteractiveScrapeTest() {
   const [url, setUrl] = useState("https://matovu-farid.com");
@@ -22,6 +22,7 @@ export function InteractiveScrapeTest() {
   const [eventSource, setEventSource] = useState<EventSource | null>(null);
   const [isAiProcessing, setIsAiProcessing] = useState(false);
   const [isDiscoveringLinks, setIsDiscoveringLinks] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     clearCachedResults().then(() => {
@@ -98,6 +99,14 @@ export function InteractiveScrapeTest() {
     await scrape(url, prompt);
   };
 
+  const copyResults = async () => {
+    if (results) {
+      await navigator.clipboard.writeText(JSON.stringify(results, null, 2));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <div className="space-y-4 bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-md w-full">
       <Input
@@ -170,15 +179,25 @@ export function InteractiveScrapeTest() {
 
       {results && (
         <div className="space-y-2">
-          <h3 className="font-semibold text-gray-900 dark:text-white">
-            Scraping Results:
-          </h3>
+          <div className="flex justify-between items-center">
+            <h3 className="font-semibold text-gray-900 dark:text-white">
+              Scraping Results:
+            </h3>
+            <button
+              onClick={copyResults}
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+              title="Copy results"
+            >
+              {copied ? (
+                <Check className="h-5 w-5 text-green-500" />
+              ) : (
+                <Copy className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+              )}
+            </button>
+          </div>
           <pre className="bg-white dark:bg-gray-600 p-4 rounded-lg border border-gray-200 dark:border-gray-500 text-gray-900 dark:text-white overflow-x-auto whitespace-pre-wrap break-words max-w-full">
             {JSON.stringify(results, null, 2)}
           </pre>
-          <Button className="w-full bg-gradient-to-r from-[#7FFFD4] to-[#4169E1] hover:opacity-90 transition-opacity text-gray-900 font-semibold">
-            Export Data
-          </Button>
         </div>
       )}
     </div>
