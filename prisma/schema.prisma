@@ -26,6 +26,7 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  apiKey    ApiKey?
 }
 
 model Account {
@@ -85,9 +86,9 @@ model Authenticator {
 
 model ApiKey {
   id        String   @id @default(cuid())
-  email     String   @unique 
-  keyId     String
-  value     String
+  key       String   @unique @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  User      User?    @relation(fields: [userId], references: [id])
+  userId    String?  @unique
 }

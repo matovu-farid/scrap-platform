@@ -12,6 +12,8 @@ export const env = createEnv({
     AWS_USAGE_PLAN_ID: z.string().min(1),
     AWS_KEY_TYPE: z.string().min(1),
     NODE_ENV: z.enum(["development", "production"]),
+    STRIPE_SECRET_KEY: z.string().min(1),
+    STRIPE_PRICE_ID: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url(),
