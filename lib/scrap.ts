@@ -1,13 +1,13 @@
 "use server";
 import { ScrapeClient } from "scrap-ai";
-import { findOrCreateUsageKey } from "./api_key";
+import { findOrCreateUsageKey } from "./apikey";
 import { auth } from "@/auth";
 import { prisma } from "../prisma";
 import { redis } from "./cache";
 import { env } from "@/env";
 
 export async function getScrapeClient(userId?: string) {
-  const { value: apiUsageKey } = await findOrCreateUsageKey(userId);
+  const apiUsageKey  = await findOrCreateUsageKey(userId);
 
   console.log({ apiUsageKey });
   return new ScrapeClient(apiUsageKey);

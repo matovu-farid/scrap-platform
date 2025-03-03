@@ -24,9 +24,10 @@ model User {
   // Optional for WebAuthn support
   Authenticator Authenticator[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  apiKey    ApiKey?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  apiKey         ApiKey?
+  StripeCustomer StripeCustomer?
 }
 
 model Account {
@@ -91,4 +92,13 @@ model ApiKey {
   updatedAt DateTime @updatedAt
   User      User?    @relation(fields: [userId], references: [id])
   userId    String?  @unique
+}
+
+model StripeCustomer {
+  id         String   @id @default(cuid())
+  customerId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  User       User?    @relation(fields: [userId], references: [id])
+  userId     String?  @unique
 }

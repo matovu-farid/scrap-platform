@@ -16,7 +16,7 @@ import {
   AlertDialogTrigger,
 } from "@components/ui/alert-dialog";
 import { useToast } from "@hooks/use-toast";
-import { findOrCreateUsageKey, purgeApiKey } from "@lib/api_key";
+import { findOrCreateUsageKey, regenerateApiKey } from "@lib/apikey";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LoaderComponent } from "@components/loader";
 
@@ -29,7 +29,7 @@ export function APIKeyManagement() {
   });
 
   const { mutate: regenerateMyApiKey } = useMutation({
-    mutationFn: () => purgeApiKey(),
+    mutationFn: () => regenerateApiKey(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["usageKey"] });
       setShowApiKey(true); // Show the new key automatically
@@ -44,14 +44,14 @@ export function APIKeyManagement() {
   const { toast } = useToast();
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(apiKey?.value || "");
+    navigator.clipboard.writeText(apiKey || "");
     toast({
       title: "API Key Copied",
       description: "Your API key has been copied to the clipboard.",
     });
   };
 
-  const maskedApiKey = ".".repeat(apiKey?.value.length || 0);
+  const maskedApiKey = ".".repeat(apiKey?.length || 0);
 
   if (isLoadingApiKey) {
     return <LoaderComponent />;
@@ -67,7 +67,7 @@ export function APIKeyManagement() {
         <div className="relative flex-grow">
           <Input
             type="text"
-            value={showApiKey ? apiKey.value : maskedApiKey}
+            value={showApiKey ? apiKey : maskedApiKey}
             readOnly
             className="pr-24 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 font-mono"
           />
