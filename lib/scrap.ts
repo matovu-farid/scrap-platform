@@ -7,7 +7,7 @@ import { redis } from "./cache";
 import { env } from "@/env";
 
 export async function getScrapeClient(userId?: string) {
-  const apiUsageKey  = await findOrCreateUsageKey(userId);
+  const apiUsageKey = await findOrCreateUsageKey(userId);
 
   console.log({ apiUsageKey });
   return new ScrapeClient(apiUsageKey);
@@ -38,5 +38,5 @@ export async function scrape(url: string, prompt: string, schema?: any) {
   });
   const userId = user?.id || "";
 
-  await scrapeClient.scrape(url, prompt, callbackUrl, userId, schema);
+  await scrapeClient.scrape({ url, prompt, callbackUrl, id: userId, schema });
 }

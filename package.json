@@ -57,7 +57,7 @@
     "remark-mdx-frontmatter": "^5.0.0",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.1",
-    "scrap-ai": "0.0.40",
+    "scrap-ai": "0.0.44",
     "stripe": "^17.7.0",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",
