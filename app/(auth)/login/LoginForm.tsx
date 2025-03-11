@@ -17,18 +17,22 @@ import { Loader2, Key } from "lucide-react";
 import { signIn } from "@/lib/auth-client";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useToast } from "@hooks/use-toast";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const { toast } = useToast();
 
   return (
-    <Card className="max-w-md">
-      <CardHeader>
-        <CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
-        <CardDescription className="text-xs md:text-sm">
+    <Card className=" bg-gray-100 dark:bg-gray-800  w-full shadow-lg border border-border">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-lg md:text-xl text-foreground">
+          Sign In
+        </CardTitle>
+        <CardDescription className="text-xs md:text-sm text-muted-foreground">
           Enter your email below to login to your account
         </CardDescription>
       </CardHeader>
@@ -51,7 +55,10 @@ export default function SignIn() {
           <div className="grid gap-2">
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
-              <Link href="#" className="ml-auto inline-block text-sm underline">
+              <Link
+                href="#"
+                className="ml-auto inline-block text-sm text-muted-foreground hover:text-foreground underline"
+              >
                 Forgot your password?
               </Link>
             </div>
@@ -78,10 +85,21 @@ export default function SignIn() {
 
           <Button
             type="submit"
-            className="w-full"
+            className="w-full  "
             disabled={loading}
             onClick={async () => {
-              await signIn.email({ email, password });
+              const res = await signIn.email({ email, password });
+              if (res.error) {
+                toast({
+                  title: "Sign in failed",
+                  description: res.error.message,
+                });
+              } else {
+                toast({
+                  title: "Sign in successful",
+                  description: "You have been signed in successfully",
+                });
+              }
             }}
           >
             {loading ? <Loader2 size={16} className="animate-spin" /> : "Login"}
@@ -95,12 +113,25 @@ export default function SignIn() {
           >
             <Button
               variant="outline"
-              className={cn("w-full gap-2")}
+              className={cn(
+                "w-full gap-2 hover:bg-secondary bg-gray-200 dark:bg-gray-700"
+              )}
               onClick={async () => {
-                await signIn.social({
+                const res = await signIn.social({
                   provider: "google",
                   callbackURL: "/dashboard",
                 });
+                if (res.error) {
+                  toast({
+                    title: "Sign in failed",
+                    description: res.error.message,
+                  });
+                } else {
+                  toast({
+                    title: "Sign in successful",
+                    description: "You have been signed in successfully",
+                  });
+                }
               }}
             >
               <svg
@@ -130,12 +161,25 @@ export default function SignIn() {
             </Button>
             <Button
               variant="outline"
-              className={cn("w-full gap-2")}
+              className={cn(
+                "w-full gap-2 hover:bg-secondary bg-gray-200 dark:bg-gray-700"
+              )}
               onClick={async () => {
-                await signIn.social({
+                const res = await signIn.social({
                   provider: "discord",
                   callbackURL: "/dashboard",
                 });
+                if (res.error) {
+                  toast({
+                    title: "Sign in failed",
+                    description: res.error.message,
+                  });
+                } else {
+                  toast({
+                    title: "Sign in successful",
+                    description: "You have been signed in successfully",
+                  });
+                }
               }}
             >
               <svg
@@ -153,12 +197,25 @@ export default function SignIn() {
             </Button>
             <Button
               variant="outline"
-              className={cn("w-full gap-2")}
+              className={cn(
+                "w-full gap-2 hover:bg-secondary bg-gray-200 dark:bg-gray-700"
+              )}
               onClick={async () => {
-                await signIn.social({
+                const res = await signIn.social({
                   provider: "github",
                   callbackURL: "/dashboard",
                 });
+                if (res.error) {
+                  toast({
+                    title: "Sign in failed",
+                    description: res.error.message,
+                  });
+                } else {
+                  toast({
+                    title: "Sign in successful",
+                    description: "You have been signed in successfully",
+                  });
+                }
               }}
             >
               <svg
@@ -176,21 +233,13 @@ export default function SignIn() {
             </Button>
           </div>
         </div>
-      </CardContent>
-      <CardFooter>
-        <div className="flex justify-center w-full border-t py-4">
-          <p className="text-center text-xs text-neutral-500">
-            Powered by{" "}
-            <Link
-              href="https://better-auth.com"
-              className="underline"
-              target="_blank"
-            >
-              <span className="dark:text-orange-200/90">better-auth.</span>
-            </Link>
-          </p>
+        <div className="mt-4 text-center text-sm">
+          Don&apos;t have an account?{" "}
+          <Link href="/signup" className="text-primary hover:underline">
+            Sign up
+          </Link>
         </div>
-      </CardFooter>
+      </CardContent>
     </Card>
   );
 }

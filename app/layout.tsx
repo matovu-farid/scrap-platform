@@ -2,7 +2,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import type React from "react";
 import { QueryClient } from "@tanstack/react-query";
-import Provider from "./provider";
+import Provider from "@/provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={inter.className + " bg-gray-50 dark:bg-gray-900"}>
         <Provider>{children}</Provider>
       </body>
     </html>
