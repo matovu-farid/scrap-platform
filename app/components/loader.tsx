@@ -1,14 +1,19 @@
 import { useTheme } from "next-themes";
-import { CircleLoader } from "react-spinners";
+import { BounceLoader } from "react-spinners";
 
-export function LoaderComponent() {
+interface LoaderComponentProps {
+  size?: number;
+}
+
+export function LoaderComponent({ size = 50 }: LoaderComponentProps) {
   const theme = useTheme();
+
   return (
-    <div className="flex justify-center items-center h-full">
-      <div className="flex flex-col items-center justify-center">
-        <CircleLoader
-          color={theme.theme === "dark" ? "#fff" : "#000"}
-          size={50}
+    <div className="flex flex-col  justify-center items-center h-full">
+      <div className="flex flex-col items-center justify-center h-full">
+        <BounceLoader
+          color={theme.theme === "dark" ? "#000" : "#fff"}
+          size={size}
         />
       </div>
     </div>
