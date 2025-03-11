@@ -18,13 +18,57 @@ import { signIn } from "@/lib/auth-client";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useToast } from "@hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { Provider } from "@/authActions";
+import { LoaderComponent } from "@/components/loader";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const { toast } = useToast();
+
+  const emailSignInMutation = useMutation({
+    mutationFn: (credentials: { email: string; password: string }) =>
+      signIn.email(credentials),
+    onSuccess: () => {
+      toast({
+        title: "Sign in successful",
+        description: "You have been signed in successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Sign in failed",
+        description: error.message,
+      });
+    },
+  });
+
+  const socialSignInMutation = useMutation({
+    mutationFn: (params: { provider: Provider; callbackURL: string }) =>
+      signIn.social(params),
+    onSuccess: () => {
+      toast({
+        title: "Sign in successful",
+        description: "You have been signed in successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Sign in failed",
+        description: error.message,
+      });
+    },
+  });
+
+  if (emailSignInMutation.isPending || socialSignInMutation.isPending) {
+    return (
+      <div className="flex flex-col justify-center items-center h-screen">
+        <LoaderComponent />
+      </div>
+    );
+  }
 
   return (
     <Card className=" bg-gray-100 dark:bg-gray-800  w-full shadow-lg border border-border">
@@ -87,24 +131,15 @@ export default function SignIn() {
 
           <Button
             type="submit"
-            className="w-full  "
-            disabled={loading}
-            onClick={async () => {
-              const res = await signIn.email({ email, password });
-              if (res.error) {
-                toast({
-                  title: "Sign in failed",
-                  description: res.error.message,
-                });
-              } else {
-                toast({
-                  title: "Sign in successful",
-                  description: "You have been signed in successfully",
-                });
-              }
-            }}
+            className="w-full"
+            disabled={emailSignInMutation.isPending}
+            onClick={() => emailSignInMutation.mutate({ email, password })}
           >
-            {loading ? <Loader2 size={16} className="animate-spin" /> : "Login"}
+            {emailSignInMutation.isPending ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              "Login"
+            )}
           </Button>
 
           <div
@@ -118,23 +153,13 @@ export default function SignIn() {
               className={cn(
                 "w-full gap-2 hover:bg-secondary bg-gray-200 dark:bg-gray-700"
               )}
-              onClick={async () => {
-                const res = await signIn.social({
+              disabled={socialSignInMutation.isPending}
+              onClick={() =>
+                socialSignInMutation.mutate({
                   provider: "google",
                   callbackURL: "/dashboard",
-                });
-                if (res.error) {
-                  toast({
-                    title: "Sign in failed",
-                    description: res.error.message,
-                  });
-                } else {
-                  toast({
-                    title: "Sign in successful",
-                    description: "You have been signed in successfully",
-                  });
-                }
-              }}
+                })
+              }
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -166,23 +191,13 @@ export default function SignIn() {
               className={cn(
                 "w-full gap-2 hover:bg-secondary bg-gray-200 dark:bg-gray-700"
               )}
-              onClick={async () => {
-                const res = await signIn.social({
+              disabled={socialSignInMutation.isPending}
+              onClick={() =>
+                socialSignInMutation.mutate({
                   provider: "discord",
                   callbackURL: "/dashboard",
-                });
-                if (res.error) {
-                  toast({
-                    title: "Sign in failed",
-                    description: res.error.message,
-                  });
-                } else {
-                  toast({
-                    title: "Sign in successful",
-                    description: "You have been signed in successfully",
-                  });
-                }
-              }}
+                })
+              }
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -202,23 +217,13 @@ export default function SignIn() {
               className={cn(
                 "w-full gap-2 hover:bg-secondary bg-gray-200 dark:bg-gray-700"
               )}
-              onClick={async () => {
-                const res = await signIn.social({
+              disabled={socialSignInMutation.isPending}
+              onClick={() =>
+                socialSignInMutation.mutate({
                   provider: "github",
                   callbackURL: "/dashboard",
-                });
-                if (res.error) {
-                  toast({
-                    title: "Sign in failed",
-                    description: res.error.message,
-                  });
-                } else {
-                  toast({
-                    title: "Sign in successful",
-                    description: "You have been signed in successfully",
-                  });
-                }
-              }}
+                })
+              }
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
