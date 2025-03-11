@@ -43,7 +43,7 @@ export default function SignUp() {
   };
 
   return (
-    <Card className="w-full shadow-lg border border-border">
+    <Card className="w-full shadow-lg border border-border bg-gray-100 dark:bg-gray-800">
       <CardHeader className="space-y-1">
         <CardTitle className="text-lg md:text-xl text-foreground">
           Sign Up
@@ -60,6 +60,7 @@ export default function SignUp() {
               <Input
                 id="first-name"
                 placeholder="Max"
+                className="dark:border-white"
                 required
                 onChange={(e) => {
                   setFirstName(e.target.value);
@@ -71,6 +72,7 @@ export default function SignUp() {
               <Label htmlFor="last-name">Last name</Label>
               <Input
                 id="last-name"
+                className="dark:border-white"
                 placeholder="Robinson"
                 required
                 onChange={(e) => {
@@ -85,6 +87,7 @@ export default function SignUp() {
             <Input
               id="email"
               type="email"
+              className="dark:border-white"
               placeholder="m@example.com"
               required
               onChange={(e) => {
@@ -98,6 +101,7 @@ export default function SignUp() {
             <Input
               id="password"
               type="password"
+              className="dark:border-white"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="new-password"
@@ -107,6 +111,7 @@ export default function SignUp() {
           <div className="grid gap-2">
             <Label htmlFor="password">Confirm Password</Label>
             <Input
+              className="dark:border-white"
               id="password_confirmation"
               type="password"
               value={passwordConfirmation}

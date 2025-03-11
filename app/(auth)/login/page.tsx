@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { isSignedIn } from "@/authActions";
-import LoginForm from "./LoginForm";
+import LoginForm from "./signin";
 
 export default async function LoginPage() {
   const authenticated = await isSignedIn();
