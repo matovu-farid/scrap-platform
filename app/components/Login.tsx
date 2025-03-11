@@ -1,15 +1,10 @@
 "use client";
 
 import { Button } from "./ui/button";
-import { login } from "@/authActions";
 
 export function LoginButton() {
   return (
-    <form
-      action={async () => {
-        await login();
-      }}
-    >
+    <a href="/login">
       <Button
         variant="secondary"
         size="sm"
@@ -17,6 +12,6 @@ export function LoginButton() {
       >
         Login
       </Button>
-    </form>
+    </a>
   );
 }

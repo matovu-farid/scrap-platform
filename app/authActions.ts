@@ -2,15 +2,40 @@
 
 import assert from "assert";
 import { prisma } from "./prisma";
-import { signIn, signOut, auth } from "./auth";
 import { createSubscribedUser } from "@/lib/stripe";
+import { redirect } from "next/navigation";
+import { auth } from "../lib/auth";
+import { headers } from "next/headers";
 
-export async function login() {
-  await signIn();
-}
+export type Provider = Required<
+  Parameters<typeof auth.api.signInSocial>
+>[0]["body"]["provider"];
+
+export const signinWithSocial = async (provider: Provider) => {
+  const response = await auth.api.signInSocial({
+    headers: await headers(),
+    body: {
+      provider,
+      callbackURL: "/dashboard",
+    },
+  });
+  console.log({ response });
+  return response;
+};
+
+export const signinWithEmail = async (email: string, password: string) => {
+  return await auth.api.signInEmail({
+    headers: await headers(),
+    body: {
+      email,
+      password,
+    },
+  });
+};
 
 export async function postLogin() {
-  const session = await auth();
+  const session = await getMySession();
+  console.log({ session });
   const user = session?.user;
 
   console.log({ session, user });
@@ -18,15 +43,7 @@ export async function postLogin() {
   const email = user.email;
   assert(email, "Email must be found");
   const name = user.name;
-  const userData = await prisma.user.findUnique({
-    where: {
-      email: email,
-    },
-    select: {
-      id: true,
-    },
-  });
-  const userId = userData?.id;
+  const userId = user.id;
   assert(userId, "UserId must be found");
 
   await Promise.all([
@@ -71,22 +88,26 @@ async function createStripeCustomerIfMissing(
   }
 }
 export async function logout() {
-  await signOut();
+  await auth.api.signOut({
+    headers: await headers(),
+  });
 }
 
-export async function getSession() {
-  const session = await auth();
+export async function getMySession() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
   return session;
 }
 
 export async function isSignedIn() {
-  const session = await getSession();
+  const session = await getMySession();
 
   return !!(session && session.user);
 }
 
 export async function getUserId() {
-  const session = await getSession();
+  const session = await getMySession();
   const email = session?.user?.email;
   assert(email, "Email must be found");
   const user = await prisma.user.findUnique({
