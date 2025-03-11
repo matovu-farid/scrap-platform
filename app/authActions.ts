@@ -12,6 +12,8 @@ export async function login() {
 export async function postLogin() {
   const session = await auth();
   const user = session?.user;
+
+  console.log({ session, user });
   assert(user, "User must be logged in");
   const email = user.email;
   assert(email, "Email must be found");
@@ -44,15 +46,22 @@ async function generateApiKeyIfMissing(userId: string) {
   });
 }
 
-
-async function createStripeCustomerIfMissing(email: string, userId: string, name?: string) {
+async function createStripeCustomerIfMissing(
+  email: string,
+  userId: string,
+  name?: string
+) {
   const stripeCustomer = await prisma.stripeCustomer.findUnique({
     where: {
       userId: userId,
     },
   });
   if (!stripeCustomer) {
-    const { customer } = await createSubscribedUser(email, userId, name ?? undefined);
+    const { customer } = await createSubscribedUser(
+      email,
+      userId,
+      name ?? undefined
+    );
     await prisma.stripeCustomer.create({
       data: {
         userId: userId,
