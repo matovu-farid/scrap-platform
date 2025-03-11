@@ -1,11 +1,9 @@
-
 "use client";
 
 import { motion } from "framer-motion";
-import { APIKeyManagement } from "@components/dashboard/api-key-management";
+import { APIKeyManagement } from "@/components/dashboard/api-key-management";
 
 export default function ApiManagmentPage() {
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -16,4 +14,3 @@ export default function ApiManagmentPage() {
     </motion.div>
   );
 }
-

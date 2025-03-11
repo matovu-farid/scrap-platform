@@ -1,9 +1,9 @@
 "use client";
 
-import { ThemeSwitcher } from "@components/theme-switcher";
-import { Button } from "@components/ui/button";
-import { Sheet, SheetContent } from "@components/ui/sheet";
-import Logo from "@components/logo";
+import { ThemeSwitcher } from "@/components/theme-switcher";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import Logo from "@/components/logo";
 import { Key, History, Play, User, SquareMenu } from "lucide-react";
 import { logout } from "@/authActions";
 import { useState } from "react";
@@ -109,7 +109,7 @@ const SidebarContent = ({
   );
 };
 
-export  function DashboardLayoutClient({
+export function DashboardLayoutClient({
   children,
 }: {
   children: React.ReactNode;

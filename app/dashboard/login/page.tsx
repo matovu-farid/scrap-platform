@@ -4,10 +4,10 @@ import type React from "react";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@components/ui/button";
-import { Input } from "@components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
-import { Navigation } from "@components/navigation";
+import { Navigation } from "@/components/navigation";
 import { signIn } from "next-auth/react";
 import { FaGoogle, FaGithub, FaDiscord } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";

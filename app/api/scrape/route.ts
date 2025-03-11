@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { scrape } from "@lib/scrap";
+import { scrape } from "@/lib/scrap";
 import { z } from "zod";
 
 export async function POST(request: Request) {

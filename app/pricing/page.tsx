@@ -1,10 +1,10 @@
 "use client";
 
-import { Navigation } from "@components/navigation";
+import { Navigation } from "@/components/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Button } from "@components/ui/button";
-import { Switch } from "@components/ui/switch";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@hooks/use-toast";
 
 const pricingPlans = [

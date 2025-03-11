@@ -1,9 +1,9 @@
 "use server";
 
 import assert from "assert";
-import { prisma } from "../prisma";
+import { prisma } from "./prisma";
 import { signIn, signOut, auth } from "./auth";
-import { createSubscribedUser } from "@lib/stripe";
+import { createSubscribedUser } from "@/lib/stripe";
 
 export async function login() {
   await signIn();

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { InteractiveScrapeTest } from "@components/dashboard/interactive-scrape-test";
+import { InteractiveScrapeTest } from "@/components/dashboard/interactive-scrape-test";
 
 export default function ScrapeTestPage() {
   return (

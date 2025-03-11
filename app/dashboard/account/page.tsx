@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { AccountSettings } from "@components/dashboard/account-settings";
+import { AccountSettings } from "@/components/dashboard/account-settings";
 
 export default function AccountPage() {
   return (

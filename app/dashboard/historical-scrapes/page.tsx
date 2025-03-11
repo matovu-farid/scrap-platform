@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { HistoricalScrapes } from "@components/dashboard/historical-scrapes";
+import { HistoricalScrapes } from "@/components/dashboard/historical-scrapes";
 
 export default function HistoricalScrapesPage() {
   return (
