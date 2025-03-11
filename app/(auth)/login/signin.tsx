@@ -27,10 +27,14 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const { toast } = useToast();
+  const [isTryingToSignIn, setIsTryingToSignIn] = useState(false);
 
   const emailSignInMutation = useMutation({
-    mutationFn: (credentials: { email: string; password: string }) =>
-      signIn.email(credentials),
+    mutationFn: (credentials: { email: string; password: string }) => {
+      setIsTryingToSignIn(true);
+      return signIn.email(credentials);
+    },
+
     onSuccess: () => {
       toast({
         title: "Sign in successful",
@@ -42,12 +46,15 @@ export default function SignIn() {
         title: "Sign in failed",
         description: error.message,
       });
+      setIsTryingToSignIn(false);
     },
   });
 
   const socialSignInMutation = useMutation({
-    mutationFn: (params: { provider: Provider; callbackURL: string }) =>
-      signIn.social(params),
+    mutationFn: (params: { provider: Provider; callbackURL: string }) => {
+      setIsTryingToSignIn(true);
+      return signIn.social(params);
+    },
     onSuccess: () => {
       toast({
         title: "Sign in successful",
@@ -59,10 +66,11 @@ export default function SignIn() {
         title: "Sign in failed",
         description: error.message,
       });
+      setIsTryingToSignIn(false);
     },
   });
 
-  if (emailSignInMutation.isPending || socialSignInMutation.isPending) {
+  if (emailSignInMutation.isPending || socialSignInMutation.isPending || isTryingToSignIn) {
     return (
       <div className="flex flex-col justify-center items-center h-screen">
         <LoaderComponent />

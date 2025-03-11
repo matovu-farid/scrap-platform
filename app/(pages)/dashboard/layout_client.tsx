@@ -99,7 +99,11 @@ const SidebarContent = ({
               await logout();
             }}
           >
-            <Button type="submit" variant="ghost">
+            <Button
+              type="submit"
+              className="dark:hover:bg-gray-50 dark:hover:text-gray-900"
+              variant="ghost"
+            >
               Logout
             </Button>
           </form>
