@@ -21,6 +21,7 @@ import { useToast } from "@hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { Provider } from "@/authActions";
 import { LoaderComponent } from "@/components/loader";
+import { useRouter } from "next/navigation";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -28,49 +29,64 @@ export default function SignIn() {
   const [rememberMe, setRememberMe] = useState(false);
   const { toast } = useToast();
   const [isTryingToSignIn, setIsTryingToSignIn] = useState(false);
-
+  const router = useRouter();
   const emailSignInMutation = useMutation({
     mutationFn: (credentials: { email: string; password: string }) => {
       setIsTryingToSignIn(true);
-      return signIn.email(credentials);
-    },
-
-    onSuccess: () => {
-      toast({
-        title: "Sign in successful",
-        description: "You have been signed in successfully",
+      return signIn.email({
+        email: credentials.email,
+        password: credentials.password,
+        fetchOptions: {
+          onError: (error) => {
+            toast({
+              title: "Sign in failed",
+              description: error.error.message,
+            });
+            setIsTryingToSignIn(false);
+          },
+          onSuccess: () => {
+            toast({
+              title: "Sign in successful",
+              description: "You have been signed in successfully",
+            });
+            router.push("/dashboard");
+          },
+        },
       });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Sign in failed",
-        description: error.message,
-      });
-      setIsTryingToSignIn(false);
     },
   });
 
   const socialSignInMutation = useMutation({
     mutationFn: (params: { provider: Provider; callbackURL: string }) => {
       setIsTryingToSignIn(true);
-      return signIn.social(params);
-    },
-    onSuccess: () => {
-      toast({
-        title: "Sign in successful",
-        description: "You have been signed in successfully",
+      return signIn.social({
+        provider: params.provider,
+        callbackURL: params.callbackURL,
+        fetchOptions: {
+          onError: (error) => {
+            toast({
+              title: "Sign in failed",
+              description: error.error.message,
+            });
+            setIsTryingToSignIn(false);
+          },
+          onSuccess: () => {
+            toast({
+              title: "Sign in successful",
+              description: "You have been signed in successfully",
+            });
+            router.push(params.callbackURL);
+          },
+        },
       });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Sign in failed",
-        description: error.message,
-      });
-      setIsTryingToSignIn(false);
     },
   });
 
-  if (emailSignInMutation.isPending || socialSignInMutation.isPending || isTryingToSignIn) {
+  if (
+    emailSignInMutation.isPending ||
+    socialSignInMutation.isPending ||
+    isTryingToSignIn
+  ) {
     return (
       <div className="flex flex-col justify-center items-center h-screen">
         <LoaderComponent />
