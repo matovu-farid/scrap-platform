@@ -1,8 +1,8 @@
 "use client";
 
-import { Toaster } from "@components/ui/toaster";
+import { Toaster } from "@/components/ui/toaster";
 import type React from "react";
-import { ThemeProvider } from "@components/theme-provider";
+import { ThemeProvider } from "@/components/theme-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Create a client

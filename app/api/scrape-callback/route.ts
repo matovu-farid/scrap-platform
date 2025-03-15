@@ -1,12 +1,12 @@
-import { redis, setCache } from "@lib/cache";
-import { getScrapeClient } from "@lib/scrap";
+import { redis, setCache } from "@/lib/cache";
+import { getScrapeClient } from "@/lib/scrap";
 import { headers } from "next/headers";
 import { NextRequest } from "next/server";
 import { isLinksEvent, isScrapedEvent, isExploreEvent } from "scrap-ai";
 import {
   RedisValuesSchema,
   ScrapeProgressSchema,
-} from "@lib/schemas/scrape-progress";
+} from "@/lib/schemas/scrape-progress";
 import { z, ZodError } from "zod";
 
 type ScrapeProgress = z.infer<typeof ScrapeProgressSchema>;
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Create a streaming response
-  console.log({body})
+  console.log({ body });
 
   if (isScrapedEvent(body)) {
     await redis.set(`scrape-results`, body.data.results);

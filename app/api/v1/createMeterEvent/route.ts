@@ -1,12 +1,10 @@
-import { createMetreEvent } from "@lib/stripe";
+import { createMetreEvent } from "@/lib/stripe";
 import { z } from "zod";
 
 const createMeterEventSchema = z.object({
   apiKey: z.string(),
   value: z.number(),
 });
-
-
 
 export async function POST(req: Request) {
   try {
