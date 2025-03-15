@@ -1,4 +1,7 @@
+"use client";
+
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { BounceLoader } from "react-spinners";
 
 interface LoaderComponentProps {
@@ -7,9 +10,15 @@ interface LoaderComponentProps {
 
 export function LoaderComponent({ size = 50 }: LoaderComponentProps) {
   const { theme } = useTheme();
-  if (!theme) {
-    return <div></div>;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) {
+    return null;
   }
+
   return (
     <div className="flex flex-col  justify-center items-center h-full">
       <div className="flex flex-col items-center justify-center h-full">
