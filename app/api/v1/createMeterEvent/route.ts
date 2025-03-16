@@ -11,7 +11,9 @@ export async function POST(req: Request) {
     const body = await req.json();
     const parsedBody = createMeterEventSchema.parse(body);
     const apiKey = parsedBody.apiKey;
-    createMetreEvent(apiKey, parsedBody.value);
+    await createMetreEvent(apiKey, parsedBody.value);
+    console.log(">>> Meter Event created successfully");
+    return new Response("Event created successfully", { status: 200 });
   } catch (error) {
     if (error instanceof Error) {
       return new Response(JSON.stringify({ error: error.message }), {

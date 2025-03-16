@@ -41,8 +41,8 @@ export async function createMetreEvent(apiKey: string, value: number) {
   await stripe.billing.meterEvents.create({
     event_name: "scrap_ai_tokens",
     payload: {
-      stripe_customer_id: customerId,
       value: value.toString(),
+      stripe_customer_id: customerId,
     },
   });
 }
